@@ -3,6 +3,7 @@ import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -20,6 +21,14 @@ const Navbar = () => {
       }}>
       <div className='container-fluid'>
         {/* Logo */}
+        <img
+          src={logo} // Replace with the actual path to your logo
+          alt='LearnSphere Logo'
+          style={{
+            height: "50px", // Adjust size as needed
+            marginRight: "10px", // Add spacing between the logo and the text
+          }}
+        />
         <span className='navbar-brand' style={{ color: "white", fontWeight: "bold", fontSize: "1.7rem" }}>
           LearnSphere
         </span>
