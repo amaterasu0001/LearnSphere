@@ -2,3 +2,16 @@
   color: red !important; /* Ensures that the color overrides any existing style */
   transform: translateY(-2px);
 }
+/* Add this to your CSS file */
+.hover-card {
+  transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
+}
+
+.hover-card:hover {
+  background-color: rgb(40, 28, 79); /* Change to the purple background color when hovered */
+  color: white; /* Optional: Change the text color to white on hover for better visibility */
+}
+
+.buttonLearnMore {
+  margin-bottom: 20px;
+}

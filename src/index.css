@@ -3,3 +3,42 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+/* Light Mode (Default) */
+:root {
+  --background-color: white;
+  --text-color: black;
+  --navbar-bg: linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86));
+  --navbar-link-color: white;
+}
+
+/* Dark Mode */
+.dark-mode {
+  --background-color: #121212;
+  --text-color: white;
+  --navbar-bg: linear-gradient(90deg, rgb(30, 20, 60), rgb(60, 50, 70));
+  --navbar-link-color: lightgray;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.navbar {
+  background: var(--navbar-bg);
+}
+
+.nav-link {
+  color: var(--navbar-link-color);
+}
+
+.btn-outline-light {
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+.btn-light {
+  background-color: var(--text-color);
+  color: var(--background-color);
+}

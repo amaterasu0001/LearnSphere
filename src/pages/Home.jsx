@@ -1,8 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import homeImage1 from "../assets/home1.png";
+//import homeImage1 from "../assets/home1.png";
 import homeImage2 from "../assets/home2.png";
+//import homeImage3 from "../assets/home3.png";
+import homeImage4 from "../assets/home4.png";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -32,7 +35,7 @@ const Home = () => {
           {/* Right Illustration */}
           <div className='col-lg-6 text-center mt-5 mt-lg-0'>
             <img
-              src={homeImage1} // Replace this URL with the actual image path
+              src={homeImage4} // Replace this URL with the actual image path
               alt='Tutor Illustration'
               className='img-fluid'
             />
@@ -85,12 +88,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      <footer className='bg-dark text-center text-white'>
-        <div className='text-center p--1' style={{ backgroundColor: "rgb(0, 0, 0)" }}>
-          © 2025 LearnSphere. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 };
