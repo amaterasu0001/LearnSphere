@@ -2,8 +2,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
-import React, { useState } from "react";
+//import React, { useState } from "react";
 import Footer from "../components/Footer";
+import { useState } from "react";
 
 const AboutUs = () => {
   // State to manage modal visibility

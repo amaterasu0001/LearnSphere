@@ -10,7 +10,12 @@ import Footer from "../components/Footer";
 const Home = () => {
   return (
     <>
-      <div className='container-fluid bg-white py-5'>
+      <div
+        className='container-fluid bg-white py-5'
+        style={{
+          backgroundColor: "var(--background-color)",
+          color: "var(--text-color)",
+        }}>
         <div className='row align-items-center'>
           {/* Left Content */}
           <div className='col-lg-6 text-center text-lg-start '>

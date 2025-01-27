@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -8,25 +8,57 @@ import logo from "../assets/logo.png";
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Handle initial theme based on user preferences or default light mode
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      setIsDarkMode(true);
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, []);
+
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.body.classList.toggle("dark-mode"); // Apply dark mode to the entire body
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    document.body.classList.toggle("dark-mode");
+    if (newMode) {
+      document.documentElement.style.setProperty("--background-color", "#121212");
+      document.documentElement.style.setProperty("--text-color", "white");
+      document.documentElement.style.setProperty(
+        "--navbar-bg",
+        "linear-gradient(90deg, rgb(30, 20, 60), rgb(60, 50, 70))"
+      );
+      document.documentElement.style.setProperty("--navbar-link-color", "lightgray");
+    } else {
+      document.documentElement.style.setProperty("--background-color", "white");
+      document.documentElement.style.setProperty("--text-color", "black");
+      document.documentElement.style.setProperty(
+        "--navbar-bg",
+        "linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86))"
+      );
+      document.documentElement.style.setProperty("--navbar-link-color", "white");
+    }
+    localStorage.setItem("theme", newMode ? "dark" : "light"); // Save preference
   };
 
   return (
     <nav
       className='navbar navbar-expand-lg sticky-top'
       style={{
-        background: "linear-gradient(90deg,rgb(40, 28, 79),rgb(83, 78, 86))",
+        background: "linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86))",
       }}>
       <div className='container-fluid'>
         {/* Logo */}
         <img
-          src={logo} // Replace with the actual path to your logo
+          src={logo}
           alt='LearnSphere Logo'
           style={{
-            height: "50px", // Adjust size as needed
-            marginRight: "10px", // Add spacing between the logo and the text
+            height: "50px",
+            marginRight: "10px",
           }}
         />
         <span className='navbar-brand' style={{ color: "white", fontWeight: "bold", fontSize: "1.7rem" }}>
@@ -92,13 +124,18 @@ const Navbar = () => {
               <button
                 className='btn'
                 onClick={toggleDarkMode}
+                aria-label={isDarkMode ? "Enable light mode" : "Enable dark mode"}
                 style={{
                   border: "none",
                   background: "transparent",
                   fontSize: "1.5rem",
-                  color: "white",
                 }}>
-                <i className={isDarkMode ? "bi bi-sun-fill" : "bi bi-moon-fill"}></i>
+                <i
+                  className={isDarkMode ? "bi bi-moon-fill" : "bi bi-sun-fill"}
+                  style={{
+                    color: isDarkMode ? "lightblue" : "yellow",
+                    textShadow: isDarkMode ? "0px 0px 10px lightblue" : "0px 0px 10px yellow",
+                  }}></i>
               </button>
             </div>
           </ul>
