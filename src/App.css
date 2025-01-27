@@ -2,6 +2,13 @@
   color: red !important; /* Ensures that the color overrides any existing style */
   transform: translateY(-2px);
 }
+
+.navbar-nav .nav-link {
+  color: white; /* Default color */
+  font-size: 1rem; /* Default size */
+  transition: color 0.5s ease, transform 0.3s ease; /* Smooth transition for both color and movement */
+}
+
 /* Add this to your CSS file */
 .hover-card {
   transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
