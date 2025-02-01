@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
 //import homeImage1 from "../assets/home1.png";
-import homeImage2 from "../assets/home2.png";
+import homeImage2 from "../assets/home2.1.png";
 //import homeImage3 from "../assets/home3.png";
 import homeImage4 from "../assets/home4.png";
 import Footer from "../components/Footer";
@@ -10,12 +10,7 @@ import Footer from "../components/Footer";
 const Home = () => {
   return (
     <>
-      <div
-        className='container-fluid bg-white py-5'
-        style={{
-          backgroundColor: "var(--background-color)",
-          color: "var(--text-color)",
-        }}>
+      <div className='container-fluid home-container py-5'>
         <div className='row align-items-center'>
           {/* Left Content */}
           <div className='col-lg-6 text-center text-lg-start '>
@@ -48,14 +43,14 @@ const Home = () => {
         </div>
       </div>
 
-      <div className='container-fluid d-flex align-items-center justify-content-center bg-white'>
+      <div className='container-fluid d-flex align-items-center justify-content-center'>
         <div className='text-center'>
           <h2 className='text-dark fw-bold'>SEARCH TUTORING JOBS</h2>
           <h4 className='text-secondary'>Find Your Tuition Jobs, in your area</h4>
         </div>
       </div>
 
-      <div className='container-fluid py-5 bg-white'>
+      <div className='container-fluid py-5'>
         <div className='row align-items-center justify-content-center text-center'>
           {/* Left Illustration */}
           <div className='col-lg-6 text-center'>

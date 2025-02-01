@@ -3,6 +3,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+  --background-color: white;
+  --text-color: black;
+  --navbar-bg: linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86));
+  --navbar-link-color: white;
+}
 
 body.dark-mode img {
   filter: brightness(0.8);
@@ -64,9 +70,36 @@ body {
 }
 
 /* Default light mode styles (if needed) */
-:root {
-  --background-color: white;
-  --text-color: black;
-  --navbar-bg: linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86));
-  --navbar-link-color: white;
+
+.home-container {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* For light mode */
+.text-muted {
+  color: var(--text-muted-color) !important;
+}
+
+/* For dark mode */
+body.dark-mode .text-muted {
+  color: lightgray !important;
+}
+
+/* For light mode */
+.text-dark {
+  color: var(--text-dark-color) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary-color) !important;
+}
+
+/* For dark mode */
+body.dark-mode .text-dark {
+  color: white !important; /* White text for dark mode */
+}
+
+body.dark-mode .text-secondary {
+  color: lightgray !important; /* Light gray for secondary text in dark mode */
 }
