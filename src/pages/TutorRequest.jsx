@@ -200,7 +200,24 @@ const TutorRequestForm = () => {
           </Col>
         </Row>
 
-        <Button variant="primary" type="submit" className="w-100 mt-3">
+        <Button
+          type="submit"
+          className="w-100 mt-3"
+          style={{
+            backgroundColor: "rgb(40, 28, 79)", // Primary color
+            borderColor: "rgb(40, 28, 79)", // Border color matching the background
+            color: "#fff", // Text color
+            borderRadius: "8px", // Rounded corners
+            fontWeight: "bold", // Bold text
+            padding: "10px", // Adequate padding
+            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
+            transition: "background-color 0.3s ease", // Smooth hover transition
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#4A148C")}
+          onMouseOut={(e) =>
+            (e.target.style.backgroundColor = "rgb(40, 28, 79)")
+          }
+        >
           Submit
         </Button>
       </Form>
