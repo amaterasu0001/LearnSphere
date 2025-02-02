@@ -15,10 +15,38 @@
 }
 
 .hover-card:hover {
-  background-color: rgb(40, 28, 79); /* Change to the purple background color when hovered */
+  background-color: rgb(
+    40,
+    28,
+    79
+  ); /* Change to the purple background color when hovered */
   color: white; /* Optional: Change the text color to white on hover for better visibility */
 }
 
 .buttonLearnMore {
   margin-bottom: 20px;
 }
+/* Dark mode specific styles */
+.dark-mode .label {
+  color: #ffffff;
+}
+
+.dark-mode .input::placeholder {
+  color: #cccccc;
+}
+
+.dark-mode .form-control, .dark-mode .form-select {
+  background-color: #222;
+  color: #ffffff;
+  border-color: #444;
+}
+
+/* Light mode specific styles */
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+.text-dark {
+  color: #212529 !important;
+}
+
