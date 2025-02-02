@@ -80,7 +80,9 @@ const LogIn = () => {
                     className='btn border-0 bg-transparent position-absolute top-50 end-0 translate-middle-y'
                     onClick={() => setShowPassword(!showPassword)}
                     style={{ cursor: "pointer" }}>
-                    <i className={`bi ${showPassword ? "bi-eye" : "bi-eye-slash"}`} style={{ fontSize: "1.2rem" }}></i>
+                    <i
+                      className={`bi ${showPassword ? "bi-eye" : "bi-eye-slash"}`}
+                      style={{ fontSize: "1.2rem", color: "#B8860B" }}></i>
                   </button>
                 </div>
                 {error.password && <div className='text-danger small mt-1'>This field is required.</div>}
