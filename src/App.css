@@ -50,3 +50,7 @@
 .dark-mode input::placeholder {
   color: rgba(255, 255, 255) !important;
 }
+
+.dark-mode textarea::placeholder {
+  color: rgba(255, 255, 255) !important;
+}
