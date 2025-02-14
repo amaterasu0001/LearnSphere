@@ -15,11 +15,7 @@
 }
 
 .hover-card:hover {
-  background-color: rgb(
-    40,
-    28,
-    79
-  ); /* Change to the purple background color when hovered */
+  background-color: rgb(40, 28, 79); /* Change to the purple background color when hovered */
   color: white; /* Optional: Change the text color to white on hover for better visibility */
 }
 
@@ -35,7 +31,8 @@
   color: #cccccc;
 }
 
-.dark-mode .form-control, .dark-mode .form-select {
+.dark-mode .form-control,
+.dark-mode .form-select {
   background-color: #222;
   color: #ffffff;
   border-color: #444;
@@ -50,3 +47,6 @@
   color: #212529 !important;
 }
 
+.dark-mode input::placeholder {
+  color: rgba(255, 255, 255) !important;
+}

@@ -1,7 +1,713 @@
-import React from "react";
+import React, { useState } from "react";
+import Footer from "../components/Footer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import { Container, Form, Button, Row, Col, Card, Alert } from "react-bootstrap";
 
-const Profile = () => {
-  return <div>This is Profile</div>;
+const UserProfile = () => {
+  const [formData, setFormData] = useState({
+    // Bachelor
+    bachelorInstitute: "",
+    bachelorDegree: "",
+    bachelorMajor: "",
+    bachelorIdCard: "",
+    bachelorResult: "",
+    bachelorCurriculum: "",
+    bachelorFromDate: "",
+    bachelorToDate: "",
+    bachelorYearOfPassing: "",
+    bachelorCurrentInstitute: "",
+
+    // HSC
+    hscInstitute: "",
+    hscDegree: "",
+    hscMajor: "",
+    hscIdCard: "",
+    hscResult: "",
+    hscCurriculum: "",
+    hscFromDate: "",
+    hscToDate: "",
+    hscYearOfPassing: "",
+    hscCurrentInstitute: "",
+
+    // SSC
+    sscInstitute: "",
+    sscDegree: "",
+    sscMajor: "",
+    sscIdCard: "",
+    sscResult: "",
+    sscCurriculum: "",
+    sscFromDate: "",
+    sscToDate: "",
+    sscYearOfPassing: "",
+    sscCurrentInstitute: "",
+
+    // Personal Information
+    email: "",
+    additionalNumber: "",
+    address: "",
+    gender: "",
+    dateOfBirth: "",
+    religion: "",
+    birthCertificateNo: "",
+    nationality: "",
+    facebookProfileLink: "",
+    linkedInProfileLink: "",
+    fathersName: "",
+    fathersNumber: "",
+    mothersName: "",
+    mothersNumber: "",
+
+    // Emergency Information
+    emergencyName: "",
+    emergencyRelation: "",
+    emergencyNumber: "",
+    emergencyAddress: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    // Validate all required fields
+    for (let key in formData) {
+      if (!formData[key].trim()) {
+        setError("Please fill in all required fields before saving.");
+        return;
+      }
+    }
+
+    setError("");
+    alert("Profile saved successfully!");
+  };
+
+  return (
+    <>
+      <Container className='mt-4'>
+        <Card className='p-4 rounded' style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
+          <h3 className='text-white text-center mb-4'>Educational Information</h3>
+          {error && <Alert variant='danger'>{error}</Alert>}
+          <Form className='text-white' onSubmit={handleSave} noValidate>
+            {["bachelor", "hsc", "ssc"].map((level) => (
+              <div key={level} className='mb-4'>
+                <h4>{level.toUpperCase()}</h4>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Institute<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        placeholder='Enter Institute'
+                        type='text'
+                        name={`${level}Institute`}
+                        value={formData[`${level}Institute`] || ""} // Ensuring default empty string
+                        onChange={handleChange}
+                        required
+                        style={{ color: "white" }}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Exam / Degree Title<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level}Degree`}
+                        value={formData[`${level}Degree`] || ""}
+                        onChange={(e) => setFormData({ ...formData, [`${level}Degree`]: e.target.value })}
+                        required>
+                        <option value=''>Select Degree</option>
+                        <option value='Secondary'>Secondary</option>
+                        <option value='Higher Secondary'>Higher Secondary</option>
+                        <option value='Diploma'>Diploma</option>
+                        <option value='Bachelor/Honors'>Bachelor/Honors</option>
+                        <option value='Masters'>Masters</option>
+                        <option value='Doctoral'>Doctoral</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Major<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level}Major`}
+                        value={formData[`${level}Major`] || ""}
+                        onChange={(e) => setFormData({ ...formData, [`${level}Major`]: e.target.value })}
+                        required>
+                        <option value=''>Select Major</option>
+                        <option value='Computer Science and Engineering'>Computer Science and Engineering(CSE)</option>
+                        <option value='Supply Chain Management'>Supply Chain Management</option>
+                        <option value='Biomedical Engineering'>Biomedical Engineering</option>
+                        <option value='Electrical Engineering'>Electrical Engineering</option>
+                        <option value='Robotics & Automation'>Robotics & Automation</option>
+                        <option value='Nutrition & Dietetics'>Nutrition & Dietetics</option>
+                        <option value='Mass Communication'>Mass Communication</option>
+                        <option value='Game Development'>Game Development</option>
+                        <option value='Science'>Science</option>
+                        <option value='Arts'>Arts</option>
+                        <option value='Commerce'>Commerce</option>
+                        <option value='Moallim'>Moallim</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        ID Card No<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        placeholder='Enter ID'
+                        type='text'
+                        name={`${level}IdCard`}
+                        value={formData[`${level}IdCard`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Result<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        placeholder='Enter Result'
+                        type='text'
+                        name={`${level}Result`}
+                        value={formData[`${level}Result`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Curriculum<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level}Curriculum`}
+                        value={formData[`${level}Curriculum`] || ""} // Ensure a default empty value
+                        onChange={(e) => setFormData({ ...formData, [`${level}Curriculum`]: e.target.value })} // Fix the key here
+                        required>
+                        <option value=''>Select Curriculum</option>
+                        <option value='Bangla Version'>Bangla Version</option>
+                        <option value='English Version'>English Version</option>
+                        <option value='Cambridge'>Cambridge</option>
+                        <option value='IB'>IB</option>
+                        <option value='Ed-Excel'>Ed-Excel</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>Year of Passing</Form.Label>
+                      <Form.Control
+                        placeholder='Enter Year'
+                        type='text'
+                        name={`${level}YearOfPassing`}
+                        value={formData[`${level}YearOfPassing`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Current Institute<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        placeholder='YES/NO'
+                        type='text'
+                        name={`${level}CurrentInstitute`}
+                        value={formData[`${level}CurrentInstitute`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </div>
+            ))}
+            <br />
+            {["Tuition Related Information"].map((level1) => (
+              <div key={level1} className='mb-4'>
+                <h4>{level1.toUpperCase()}</h4>
+                {/* <h3 className='mb-4'>Tuition Related Information</h3> */}
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Tutoring Method<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level1}tutoringMethod`}
+                        value={formData[`${level1}tutoringMethod`] || ""} // Ensure a default empty value
+                        onChange={(e) => setFormData({ ...formData, [`${level1}tutoringMethod`]: e.target.value })} // Fix the key here
+                        required>
+                        <option value=''>Select Method</option>
+                        <option value='Student Home'>Student Home</option>
+                        <option value='Home'>Home</option>
+                        <option value='Coaching'>Coaching</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Available Days<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level1}availableDays`}
+                        value={formData[`${level1}availableDays`] || ""} // Ensure a default empty value
+                        onChange={(e) => setFormData({ ...formData, [`${level1}availableDays`]: e.target.value })} // Fix the key here
+                        required>
+                        <option value=''>Select Days</option>
+                        <option value='2Days'>2Days</option>
+                        <option value='3Days'>3Days</option>
+                        <option value='4Days'>4Days</option>
+                        <option value='5Days'>5Days</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Time<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        placeholder='Enter Time'
+                        type='text'
+                        name={`${level1}time`}
+                        value={formData[`${level1}time`]}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        City<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Select
+                        name={`${level1}city`}
+                        value={formData[`${level1}city`] || ""} // Ensure a default empty value
+                        onChange={(e) => setFormData({ ...formData, [`${level1}city`]: e.target.value })} // Fix the key here
+                        required>
+                        <option value=''>Select City</option>
+                        <option value='Dhaka'>Dhaka</option>
+                        <option value='Barishal'>Barishal</option>
+                        <option value='Khulna'>Khulna</option>
+                        <option value='Sylhet'>Sylhet</option>
+                        <option value='Chattogram'>Chattogram</option>
+                        <option value='Mymensing'>Mymensing</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Location<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='location'
+                        value={formData.location}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Preferred Locations<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='preferredLocations'
+                        value={formData.preferredLocations}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Expected Salary<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='expectedSalary'
+                        value={formData.expectedSalary}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Preferred Categories<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='preferredCategories'
+                        value={formData.preferredCategories}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Preferred Classes<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='preferredClasses'
+                        value={formData.preferredClasses}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Preferred Subjects<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='preferredSubjects'
+                        value={formData.preferredSubjects}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Place of Tutoring<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='placeOfTutoring'
+                        value={formData.placeOfTutoring}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Tutoring Styles<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='tutoringStyles'
+                        value={formData.tutoringStyles}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>
+                        Total Experience<span className='text-danger'>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='totalExperience'
+                        value={formData.totalExperience}
+                        onChange={handleChange}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label className='text-white'>Experience Details</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='experienceDetails'
+                        value={formData.experienceDetails}
+                        onChange={handleChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </div>
+            ))}
+
+            <h3 className='mb-4'>Personal Information</h3>
+
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Email<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control type='email' name='email' value={formData.email} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Additional Number<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='additionalNumber'
+                    value={formData.additionalNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Address<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control type='text' name='address' value={formData.address} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Gender<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control type='text' name='gender' value={formData.gender} onChange={handleChange} required />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Date of Birth</Form.Label>
+                  <Form.Control type='date' name='dateOfBirth' value={formData.dateOfBirth} onChange={handleChange} />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Religion</Form.Label>
+                  <Form.Control type='text' name='religion' value={formData.religion} onChange={handleChange} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Birth Certificate No</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='birthCertificateNo'
+                    value={formData.birthCertificateNo}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Nationality<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='nationality'
+                    value={formData.nationality}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Facebook Profile Link</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='facebookProfileLink'
+                    value={formData.facebookProfileLink}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>LinkedIn Profile Link</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='linkedInProfileLink'
+                    value={formData.linkedInProfileLink}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Father&apos;s Name<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='fathersName'
+                    value={formData.fathersName}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Father&apos;s Number<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='fathersNumber'
+                    value={formData.fathersNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Mother&apos;s Name<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='mothersName'
+                    value={formData.mothersName}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>
+                    Mother&apos;s Number<span className='text-danger'>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='mothersNumber'
+                    value={formData.mothersNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <h3 className='mb-4'>Emergency Information</h3>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='emergencyName'
+                    value={formData.emergencyName}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Relation</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='emergencyRelation'
+                    value={formData.emergencyRelation}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Number</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='emergencyNumber'
+                    value={formData.emergencyNumber}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label className='text-white'>Address</Form.Label>
+                  <Form.Control
+                    type='text'
+                    name='emergencyAddress'
+                    value={formData.emergencyAddress}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <div className='d-flex justify-content-center mt-3'>
+              <Button
+                style={{ backgroundColor: "rgb(40, 28, 79)", borderColor: "rgb(40, 28, 79)" }}
+                onClick={() => alert("Form Submitted Successfully")}>
+                Save
+              </Button>
+            </div>
+          </Form>
+        </Card>
+      </Container>
+      <Footer />
+    </>
+  );
 };
 
-export default Profile;
+export default UserProfile;
