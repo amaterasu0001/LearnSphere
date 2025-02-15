@@ -111,7 +111,7 @@ const Home = () => {
       {showMessage && (
         <div className='message-overlay'>
           <div className='message-box'>
-            <p className='text-dark fw-bold'>Please select your role to continue!</p>
+            <p className='text-body fw-bold'>Please select your role to continue!</p>
             <button
               className='btn btn-primary mx-2'
               onClick={clearMessage}
