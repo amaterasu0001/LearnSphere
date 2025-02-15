@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import login1 from "../assets/login1.png";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 const LogIn = () => {
+  const navigate = useNavigate(); // ✅ Initialize useNavigate
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +30,7 @@ const LogIn = () => {
 
   return (
     <>
+      <Navbar />
       <div
         className='container d-flex min-vh-100 align-items-center justify-content-center'
         style={{ marginTop: "-90px" }}>
@@ -116,7 +120,9 @@ const LogIn = () => {
             </div>
 
             {/* Sign Up Button */}
-            <button className='btn btn-dark w-100 mt-3'>Sign Up</button>
+            <button className='btn btn-dark w-100 mt-3' onClick={() => navigate("/signup")}>
+              Sign Up
+            </button>
           </div>
         </div>
       </div>

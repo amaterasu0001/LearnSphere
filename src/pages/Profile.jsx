@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Navbar from "../components/Navbar";
 import { Container, Form, Button, Row, Col, Card, Alert } from "react-bootstrap";
 
 const UserProfile = () => {
@@ -66,6 +67,30 @@ const UserProfile = () => {
     emergencyAddress: "",
   });
 
+  // useEffect(() => {
+  //   const rootElement = document.documentElement;
+  //   const formContainer = document.getElementById("form-container");
+
+  //   const applyTheme = () => {
+  //     const darkMode = rootElement.classList.contains("dark-mode");
+  //     if (darkMode) {
+  //       formContainer?.classList.add("dark-theme");
+  //     } else {
+  //       formContainer?.classList.remove("dark-theme");
+  //     }
+  //   };
+
+  //   applyTheme();
+
+  //   const observer = new MutationObserver(applyTheme);
+  //   observer.observe(rootElement, {
+  //     attributes: true,
+  //     attributeFilter: ["class"],
+  //   });
+
+  //   return () => observer.disconnect();
+  // }, []);
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -89,6 +114,7 @@ const UserProfile = () => {
 
   return (
     <>
+      <Navbar />
       <Container className='mt-4'>
         <Card className='p-4 rounded' style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
           <h3 className='text-white text-center mb-4'>Educational Information</h3>

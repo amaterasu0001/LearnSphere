@@ -103,3 +103,58 @@ body.dark-mode .text-dark {
 body.dark-mode .text-secondary {
   color: lightgray !important; /* Light gray for secondary text in dark mode */
 }
+/* requestTutor */
+/* Light mode styles */
+.custom-select {
+  color: black;
+}
+
+/* Dark mode styles */
+.dark-mode .custom-select {
+  color: white;
+}
+
+/* Dropdown menu background */
+.dark-mode .custom-select__menu {
+  background-color: #222 !important;
+  color: white !important;
+}
+
+/* Dropdown options */
+.dark-mode .custom-select__option {
+  color: white !important;
+  background-color: #222 !important;
+}
+
+.dark-mode .custom-select__option--is-focused {
+  background-color: #444 !important;
+}
+
+/* Placeholder text */
+.dark-mode .custom-select__placeholder {
+  color: #ccc !important;
+}
+
+/* Scrollbar styling */
+.dark-mode .custom-select__menu-list {
+  background-color: #222 !important;
+  scrollbar-color: #555 #111; /* Custom scrollbar */
+}
+
+/* Custom scrollbar styles */
+.dark-mode .custom-select__menu-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark-mode .custom-select__menu-list::-webkit-scrollbar-track {
+  background: #111; /* Track color */
+}
+
+.dark-mode .custom-select__menu-list::-webkit-scrollbar-thumb {
+  background: #555; /* Scrollbar thumb color */
+  border-radius: 4px;
+}
+
+.dark-mode .custom-select__menu-list::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}

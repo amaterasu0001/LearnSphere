@@ -4,6 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 //import React, { useState } from "react";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 import { useState } from "react";
 
 const AboutUs = () => {
@@ -16,6 +17,7 @@ const AboutUs = () => {
 
   return (
     <>
+      <Navbar />
       <section className='about-us-section py-1'>
         <Container className='mt-4'>
           <Row className='w-100'>
