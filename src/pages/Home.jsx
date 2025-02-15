@@ -23,14 +23,24 @@ const Home = () => {
               <i className='bi bi-geo-alt-fill text-primary ms-lg-5'></i> Find the Right Tutor in Your Area
             </p>
             {/* Button with Gradient */}
-            <button
+            {/* <button
               className='btn btn-lg mt-4 px-4 text-light fw-bold ms-lg-5'
               style={{
                 backgroundColor: "rgb(40, 28, 79)",
                 border: "none",
               }}>
               <i className='bi bi-search me-2'></i> Find a Tutor
-            </button>
+            </button> */}
+            <Link
+              to='/TutorRequest'
+              className='btn btn-lg mt-4 px-4 text-light fw-bold ms-lg-5'
+              style={{
+                background: "rgb(40, 28, 79)",
+                border: "none",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              }}>
+              <i className='bi bi-search me-2'></i> Find a Tutor →
+            </Link>
           </div>
 
           {/* Right Illustration */}
