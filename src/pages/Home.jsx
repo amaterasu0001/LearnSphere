@@ -13,27 +13,14 @@ const Home = () => {
   const [blurEffect, setBlurEffect] = useState(false);
 
   useEffect(() => {
-    // Check if coming from refresh
-    const isRefreshed = sessionStorage.getItem("refreshed");
+    // Show message only if visiting for the first time
+    const hasVisitedBefore = sessionStorage.getItem("hasVisited");
 
-    if (isRefreshed) {
+    if (!hasVisitedBefore) {
       setShowMessage(true);
       setBlurEffect(true);
-      sessionStorage.removeItem("refreshed"); // Remove after showing message
+      sessionStorage.setItem("hasVisited", "true"); // Mark as visited
     }
-  }, []);
-
-  // Before refresh, set sessionStorage value
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.setItem("refreshed", "true");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
   }, []);
 
   const clearMessage = () => {
@@ -74,6 +61,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+
         {/* Search Tutoring Jobs Section */}
         <div className='container-fluid d-flex align-items-center justify-content-center'>
           <div className='text-center'>
@@ -132,7 +120,11 @@ const Home = () => {
                 border: "none",
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                 borderRadius: "15px",
-              }}>
+                transition: "background 0.3s ease", // Smooth transition
+              }}
+              onMouseEnter={(e) => (e.target.style.background = "rgb(81, 65, 126)")} // Light purple on hover
+              onMouseLeave={(e) => (e.target.style.background = "rgb(40, 28, 79)")} // Back to original
+            >
               Guardian/Student
             </button>
             <button
@@ -143,7 +135,11 @@ const Home = () => {
                 border: "none",
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                 borderRadius: "15px",
-              }}>
+                transition: "background 0.3s ease", // Smooth transition
+              }}
+              onMouseEnter={(e) => (e.target.style.background = "rgb(81, 65, 126)")} // Light purple on hover
+              onMouseLeave={(e) => (e.target.style.background = "rgb(40, 28, 79)")} // Back to original
+            >
               Tutor
             </button>
           </div>
