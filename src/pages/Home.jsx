@@ -6,6 +6,7 @@ import homeImage2 from "../assets/home2.1.png";
 //import homeImage3 from "../assets/home3.png";
 import homeImage4 from "../assets/home4.png";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -76,7 +77,8 @@ const Home = () => {
               </div>
             </div>
 
-            <button
+            <Link
+              to='/TutionJob'
               className='btn btn-lg text-white px-4 fw-bold'
               style={{
                 background: "rgb(40, 28, 79)",
@@ -84,7 +86,7 @@ const Home = () => {
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
               }}>
               <i className='bi bi-search me-2'></i> Search Tuition →
-            </button>
+            </Link>
           </div>
         </div>
       </div>
