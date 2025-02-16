@@ -30,7 +30,6 @@ const LogIn = () => {
 
   return (
     <>
-      <Navbar />
       <div
         className='container d-flex min-vh-100 align-items-center justify-content-center'
         style={{ marginTop: "-90px" }}>

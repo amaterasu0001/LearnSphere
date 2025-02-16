@@ -114,7 +114,6 @@ const UserProfile = () => {
 
   return (
     <>
-      <Navbar />
       <Container className='mt-4'>
         <Card className='p-4 rounded' style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
           <h3 className='text-white text-center mb-4'>Educational Information</h3>

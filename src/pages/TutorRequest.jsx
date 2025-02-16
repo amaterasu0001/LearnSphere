@@ -34,7 +34,6 @@ const TutorRequestForm = () => {
 
   return (
     <>
-      <Navbar />
       <div
         id='form-container'
         className='p-4 rounded light-theme'

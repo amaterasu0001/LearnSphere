@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-// import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Profile from "./pages/Profile";
@@ -8,10 +8,12 @@ import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import TutorRequest from "./pages/TutorRequest";
 import TutionJob from "./pages/TutionJob";
+// import { Navbar } from "react-bootstrap";
 
 function App() {
   return (
     <>
+      <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/AboutUs' element={<AboutUs />} />

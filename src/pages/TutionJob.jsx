@@ -97,7 +97,7 @@ const TutorJobList = () => {
 
   return (
     <>
-      <Navbar /> {/* ✅ Navbar is now only rendered once */}
+      {/* ✅ Navbar is now only rendered once */}
       <div className='container mt-4'>
         <div className='row'>
           {jobs.map((job, index) => (

@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 const SignUp = () => {
   return (
     <>
-      <Navbar />
       <div
         className='d-flex justify-content-center align-items-center vh-100'
         style={{

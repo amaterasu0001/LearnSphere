@@ -17,7 +17,6 @@ const AboutUs = () => {
 
   return (
     <>
-      <Navbar />
       <section className='about-us-section py-1'>
         <Container className='mt-4'>
           <Row className='w-100'>
