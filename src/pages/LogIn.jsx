@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import login1 from "../assets/login1.png";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+
 import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 const LogIn = () => {

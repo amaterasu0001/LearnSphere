@@ -4,7 +4,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 
 const TutorRequestForm = () => {
   useEffect(() => {

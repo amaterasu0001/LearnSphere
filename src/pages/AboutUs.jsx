@@ -4,7 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 //import React, { useState } from "react";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+
 import { useState } from "react";
 
 const AboutUs = () => {

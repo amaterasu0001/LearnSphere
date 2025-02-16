@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Footer from "../components/Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Navbar from "../components/Navbar";
+
 import { Container, Form, Button, Row, Col, Card, Alert } from "react-bootstrap";
 
 const UserProfile = () => {
