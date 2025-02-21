@@ -1,17 +1,17 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
+import "bootstrap-icons/font/bootstrap-icons.css"; // Bootstrap Icons
 import login1 from "../assets/login1.png";
 import Footer from "../components/Footer";
-
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
-  const navigate = useNavigate(); // ✅ Initialize useNavigate
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState({ email: false, password: false });
+  const [role, setRole] = useState(""); // Role selection state
+  const [error, setError] = useState({ email: false, password: false, role: false });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,29 +20,63 @@ const LogIn = () => {
     setError({
       email: email.trim() === "",
       password: password.trim() === "",
+      role: role === "", // Ensure role is selected
     });
 
-    if (email.trim() !== "" && password.trim() !== "") {
-      console.log("Form Submitted", { email, password });
+    if (email.trim() !== "" && password.trim() !== "" && role !== "") {
+      console.log("Form Submitted", { email, password, role });
       // Proceed with authentication logic
     }
   };
 
   return (
     <>
-      <div
-        className='container d-flex min-vh-100 align-items-center justify-content-center'
-        style={{ marginTop: "-90px" }}>
+      <div className='container-fluid d-flex align-items-center justify-content-center ' style={{ height: "671px" }}>
         <div className='row w-100'>
-          {/* Left Side Image */}
-          <div className='col-md-6 d-flex flex-column align-items justify-content-center'>
-            <img src={login1} alt='Tutoring Illustration' className='img-fluid' style={{ marginLeft: "-60px" }} />
+          {/* Left Side Image - Hidden on small screens */}
+          <div className='col-lg-6 col-md-6 d-none d-md-flex flex-column align-items-center justify-content-center'>
+            <img src={login1} alt='Tutoring Illustration' className='img-fluid' />
           </div>
 
           {/* Right Side Login Form */}
-          <div className='col-md-6 d-flex flex-column justify-content-center'>
+          <div className='col-lg-6 col-md-6 col-12 d-flex flex-column justify-content-center px-4'>
+            {/* Role Selection (Top Right) */}
+            <div className='d-flex justify-content-end flex-column align-items-end mb-1 mt-n1 '>
+              <div className='d-flex flex-wrap'>
+                <button
+                  className='btn btn-sm mx-1 my-0'
+                  onClick={() => setRole("student")}
+                  style={{
+                    backgroundColor: role === "student" ? "green" : "white",
+                    color: role === "student" ? "white" : "rgb(40, 28, 79)",
+                    border: "2px solid rgb(40, 28, 79)",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                  }}>
+                  Guardian / Student
+                </button>
+
+                <button
+                  className='btn btn-sm mx-1 my-0'
+                  onClick={() => setRole("tutor")}
+                  style={{
+                    backgroundColor: role === "tutor" ? "green" : "white",
+                    color: role === "tutor" ? "white" : "rgb(40, 28, 79)",
+                    border: "2px solid rgb(40, 28, 79)",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                  }}>
+                  Tutor
+                </button>
+              </div>
+
+              {/* Role Error Message - NOW DIRECTLY UNDER BUTTONS */}
+              {error.role && <div className='text-danger small mt-2'>Please select a role before proceeding.</div>}
+            </div>
+
             <h2 className='text-success fw-bold'>Welcome Back</h2>
             <p>Sign in to Continue your Journey.</p>
+
             <form onSubmit={handleSubmit}>
               {/* Phone/Email Field */}
               <div className='mb-3'>

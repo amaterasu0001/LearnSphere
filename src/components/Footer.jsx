@@ -4,13 +4,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 const Footer = () => {
   return (
-    <div>
-      <footer className='bg-dark text-center text-white'>
-        <div className='text-center p--1' style={{ backgroundColor: "rgb(0, 0, 0)" }}>
-          © 2025 LearnSphere. All rights reserved.
-        </div>
-      </footer>
-    </div>
+    <footer className='text-center text-white py-2 w-100' style={{ backgroundColor: "black", bottom: "0", left: "0" }}>
+      © 2025 LearnSphere. All rights reserved.
+    </footer>
   );
 };
 

@@ -83,3 +83,13 @@
   filter: blur(5px);
   transition: filter 0.3s ease-in-out;
 }
+
+footer {
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+
+  bottom: 0;
+  width: 100%;
+  font-size: 14px;
+}
