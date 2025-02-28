@@ -97,20 +97,38 @@ const UserProfile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-
-    // Validate all required fields
-    for (let key in formData) {
-      if (!formData[key].trim()) {
-        setError("Please fill in all required fields before saving.");
-        return;
-      }
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to save your profile.");
+      return;
     }
-
-    setError("");
-    alert("Profile saved successfully!");
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/profile/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Profile updated successfully!");
+      } else {
+        setError(data.message || "Profile update failed.");
+      }
+    } catch (error) {
+      console.error("Profile Save Error:", error);
+      setError("Server error. Try again later.");
+    }
   };
+  
 
   return (
     <>
