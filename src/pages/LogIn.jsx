@@ -20,13 +20,16 @@ const LogIn = () => {
 
     if (email.trim() !== "" && password.trim() !== "" && role !== "") {
       try {
-        const result = await login({ email, password, role }); // Ensure role is included
+        const result = await login({ email, password, role }); // Call API
 
         if (result.success) {
+          localStorage.setItem("token", result.token); // Store token
+          localStorage.setItem("role", result.role); // Store role
+
           if (result.role === "student") {
-            navigate("/TutorRequest"); // Ensure route names are correct
+            navigate("/TutorRequest"); // Redirect student
           } else if (result.role === "tutor") {
-            navigate("/Profile");
+            navigate("/Profile"); // Redirect tutor
           }
         } else {
           setError({ ...error, general: result.message || "Login failed. Try again." });

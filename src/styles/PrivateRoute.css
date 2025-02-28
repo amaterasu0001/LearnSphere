@@ -1,0 +1,14 @@
+
+
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 18px;
+  text-align: center;
+}

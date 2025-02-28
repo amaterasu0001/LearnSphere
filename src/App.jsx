@@ -8,7 +8,7 @@ import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import TutorRequest from "./pages/TutorRequest";
 import TutionJob from "./pages/TutionJob";
-// import { Navbar } from "react-bootstrap";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 
 function App() {
   return (
@@ -17,11 +17,15 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/AboutUs' element={<AboutUs />} />
-        <Route path='/Profile' element={<Profile />} />
         <Route path='/SignUp' element={<SignUp />} />
         <Route path='/Login' element={<LogIn />} />
-        <Route path='/TutorRequest' element={<TutorRequest />} />
         <Route path='/TutionJob' element={<TutionJob />} />
+
+        {/* 🔒 Protected Routes: Only Accessible if Logged In */}
+        <Route element={<PrivateRoute />}>
+          <Route path='/Profile' element={<Profile />} />
+          <Route path='/TutorRequest' element={<TutorRequest />} />
+        </Route>
       </Routes>
     </>
   );

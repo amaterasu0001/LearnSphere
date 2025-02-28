@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -7,6 +7,10 @@ import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is logged in
+  const isLoggedIn = !!localStorage.getItem("token");
 
   // Handle initial theme based on user preferences or default light mode
   useEffect(() => {
@@ -25,24 +29,24 @@ const Navbar = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
     document.body.classList.toggle("dark-mode");
-    if (newMode) {
-      document.documentElement.style.setProperty("--background-color", "#121212");
-      document.documentElement.style.setProperty("--text-color", "white");
-      document.documentElement.style.setProperty(
-        "--navbar-bg",
-        "linear-gradient(90deg, rgb(30, 20, 60), rgb(60, 50, 70))"
-      );
-      document.documentElement.style.setProperty("--navbar-link-color", "lightgray");
+    localStorage.setItem("theme", newMode ? "dark" : "light");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/Login");
+  };
+
+  // 🔹 Handle Restricted Page Access (Forcing Login)
+  const handleRestrictedNavigation = (e, route) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      alert("You must log in first to access this page.");
+      navigate("/login");
     } else {
-      document.documentElement.style.setProperty("--background-color", "white");
-      document.documentElement.style.setProperty("--text-color", "black");
-      document.documentElement.style.setProperty(
-        "--navbar-bg",
-        "linear-gradient(90deg, rgb(40, 28, 79), rgb(83, 78, 86))"
-      );
-      document.documentElement.style.setProperty("--navbar-link-color", "white");
+      navigate(route);
     }
-    localStorage.setItem("theme", newMode ? "dark" : "light"); // Save preference
   };
 
   return (
@@ -86,21 +90,20 @@ const Navbar = () => {
               </Link>
             </li>
             <li className='nav-item mx-2'>
-              <Link className='nav-link' to='/TutionJob' style={{ color: "white", fontSize: "1rem" }}>
+              <Link
+                className='nav-link'
+                to='/TutionJob'
+                style={{ color: "white", fontSize: "1rem" }}
+                onClick={(e) => handleRestrictedNavigation(e, "/TutionJob")}>
                 Tuition Jobs
               </Link>
             </li>
-            {/* <li className="nav-item mx-2">
-              <Link
-                className="nav-link"
-                to="/premium-tutors"
-                style={{ color: "white", fontSize: "1rem" }}
-              >
-                Premium Tutors
-              </Link>
-            </li> */}
             <li className='nav-item mx-2'>
-              <Link className='nav-link' to='/TutorRequest' style={{ color: "white", fontSize: "1rem" }}>
+              <Link
+                className='nav-link'
+                to='/TutorRequest'
+                style={{ color: "white", fontSize: "1rem" }}
+                onClick={(e) => handleRestrictedNavigation(e, "/TutorRequest")}>
                 Tutor Request
               </Link>
             </li>
@@ -110,19 +113,33 @@ const Navbar = () => {
               </Link>
             </li>
             <li className='nav-item mx-2'>
-              <Link className='nav-link' to='/Profile' style={{ color: "white", fontSize: "1rem" }}>
+              <Link
+                className='nav-link'
+                to='/Profile'
+                style={{ color: "white", fontSize: "1rem" }}
+                onClick={(e) => handleRestrictedNavigation(e, "/Profile")}>
                 Profile
               </Link>
             </li>
-            {/* Login and Sign Up Buttons */}
+
+            {/* Login / Logout Buttons */}
             <div className='d-flex align-items-center ms-3'>
-              <Link to='/login' className='btn btn-outline-light me-2'>
-                Login
-              </Link>
-              <Link to='/signup' className='btn custom-hover btn-outline-light me-2'>
-                Sign Up
-              </Link>
+              {isLoggedIn ? (
+                <button onClick={handleLogout} className='btn btn-outline-light me-2'>
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link to='/login' className='btn btn-outline-light me-2'>
+                    Login
+                  </Link>
+                  <Link to='/signup' className='btn custom-hover btn-outline-light me-2'>
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
+
             {/* Night Mode Toggle Icon */}
             <div className='ms-3 d-flex align-items-center'>
               <button

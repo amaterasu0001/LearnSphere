@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/Navbar";
 import PropTypes from "prop-types";
@@ -39,7 +39,6 @@ const TutorJobCard = ({ id, title, date, type, salary, subjects, location, prefe
   );
 };
 
-// Add PropTypes validation
 TutorJobCard.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -52,6 +51,22 @@ TutorJobCard.propTypes = {
 };
 
 const TutorJobList = () => {
+  const navigate = useNavigate();
+
+  // Check if user is logged in (Assume user data is stored in localStorage)
+  const isLoggedIn = localStorage.getItem("user");
+
+  if (!isLoggedIn) {
+    return (
+      <div className='container text-center mt-5'>
+        <h3 className='text-danger'>You must log in first to view tutor jobs.</h3>
+        <button className='btn btn-primary mt-3' onClick={() => navigate("/login")}>
+          Go to Login
+        </button>
+      </div>
+    );
+  }
+
   const jobs = [
     {
       id: "154153",
@@ -97,7 +112,6 @@ const TutorJobList = () => {
 
   return (
     <>
-      {/* ✅ Navbar is now only rendered once */}
       <div className='container mt-4'>
         <div className='row'>
           {jobs.map((job, index) => (
