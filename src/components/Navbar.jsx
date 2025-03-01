@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import logo from "../assets/logo.png";
+import { Button } from "react-bootstrap";
 
 const Navbar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -32,10 +33,17 @@ const Navbar = () => {
     localStorage.setItem("theme", newMode ? "dark" : "light");
   };
 
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("role");
+  //   navigate("/Login");
+  // };
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/Login");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
+    localStorage.removeItem("profile"); // ✅ Remove profile data
+    window.location.href = "/login"; // ✅ Redirect to login page
   };
 
   // 🔹 Handle Restricted Page Access (Forcing Login)
@@ -125,9 +133,12 @@ const Navbar = () => {
             {/* Login / Logout Buttons */}
             <div className='d-flex align-items-center ms-3'>
               {isLoggedIn ? (
-                <button onClick={handleLogout} className='btn btn-outline-light me-2'>
+                // <button onClick={handleLogout} className='btn btn-outline-light me-2'>
+                //   Logout
+                // </button>
+                <Button variant='outline-light' onClick={handleLogout}>
                   Logout
-                </button>
+                </Button>
               ) : (
                 <>
                   <Link to='/login' className='btn btn-outline-light me-2'>

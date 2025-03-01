@@ -97,20 +97,28 @@ router.post("/signup", async (req, res) => {
     await user.save();
 
     // ✅ Create a Profile Entry for the User
-    const profile = new Profile({
-      email,
-      name,
-      address: "",
-      gender: "",
-      dateOfBirth: "",
-      nationality: "",
-      fathersName: "",
-      mothersName: "",
-    });
+    // const profile = new Profile({
+    //   email,
+    //   name,
+    //   location: req.body.location || null,
+    //   address: req.body.address || null,
+    //   gender: req.body.gender || null,
+    //   additionalNumber: req.body.additionalNumber || null,
+    //   dateOfBirth: req.body.dateOfBirth || null,
+    //   nationality: req.body.nationality || null,
+    //   fathersName: req.body.fathersName || null,
+    //   mothersName: req.body.mothersName || null,
+    //   religion: req.body.religion || null,
+    //   birthCertificateNo: req.body.birthCertificateNo || null,
+    //   facebookProfileLink: req.body.facebookProfileLink || null,
+    //   linkedInProfileLink: req.body.linkedInProfileLink || null,
+    //   fathersNumber: req.body.fathersNumber || null,
+    //   mothersNumber: req.body.mothersNumber || null,
+    // });
 
-    await profile.save();
+    //await profile.save();
 
-    console.log("User and Profile saved successfully:", user, profile);
+    console.log("User saved successfully:", user);
 
     res.status(201).json({ success: true, message: "User registered successfully" });
   } catch (error) {
@@ -126,20 +134,16 @@ router.post("/login", async (req, res) => {
   const { email, password, role } = req.body;
 
   try {
-    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ success: false, message: "Invalid credentials" });
 
-    // Check if the password matches
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials" });
 
-    // Ensure role matches the stored role
     if (user.role !== role) {
       return res.status(400).json({ success: false, message: "Role mismatch. Please select the correct role." });
     }
 
-    // Generate a JWT token
     const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, "your_jwt_secret", {
       expiresIn: "1h",
     });
@@ -148,8 +152,9 @@ router.post("/login", async (req, res) => {
       success: true,
       message: "Login successful",
       token,
+      email: user.email,
+      name: user.name, // ✅ Send user name
       role: user.role,
-      email: user.email, // Return email so we can fetch profile later
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error", error: error.message });
@@ -159,14 +164,54 @@ router.post("/login", async (req, res) => {
 /* ==========================
 ✅ PROFILE ROUTE (Fetch Profile Data)
 ========================== */
-router.get("/profile", async (req, res) => {
-  try {
-    const { email } = req.query; // Get email from query params
+router.post("/profile/update", async (req, res) => {
+  console.log("➡️ Received Data:", req.body);
 
-    if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required" });
+  const { email, name, ...updatedFields } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ success: false, message: "Email and Name are required for profile update" });
+  }
+
+  try {
+    // ✅ Remove empty fields before updating
+    Object.keys(updatedFields).forEach((key) => {
+      if (!updatedFields[key]) delete updatedFields[key];
+    });
+
+    console.log("➡️ Final Data to Update:", updatedFields);
+
+    let profile = await Profile.findOne({ email });
+
+    if (!profile) {
+      profile = new Profile({ email, name, ...updatedFields });
+      await profile.save();
+      console.log("✅ Profile Created Successfully:", profile);
+      return res.status(201).json({ success: true, message: "Profile created successfully", profile });
     }
 
+    profile = await Profile.findOneAndUpdate(
+      { email },
+      { $set: { name, ...updatedFields } }, // ✅ Ensure `name` is updated
+      { new: true, upsert: true }
+    );
+
+    console.log("✅ Profile Updated Successfully:", profile);
+    res.status(200).json({ success: true, message: "Profile updated successfully", profile });
+  } catch (error) {
+    console.error("❌ Profile Update Error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
+router.get("/profile/get", async (req, res) => {
+  const email = req.query.email;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email is required to fetch profile data" });
+  }
+
+  try {
     const profile = await Profile.findOne({ email });
 
     if (!profile) {
@@ -175,7 +220,7 @@ router.get("/profile", async (req, res) => {
 
     res.status(200).json({ success: true, profile });
   } catch (error) {
-    console.error("Profile Fetch Error:", error.message);
+    console.error("❌ Profile Fetch Error:", error);
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 });

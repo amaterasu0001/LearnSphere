@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -8,6 +8,8 @@ import { Container, Form, Button, Row, Col, Card, Alert } from "react-bootstrap"
 
 const UserProfile = () => {
   const [formData, setFormData] = useState({
+    email: localStorage.getItem("email") || "",
+    name: localStorage.getItem("name") || "",
     // Bachelor
     bachelorInstitute: "",
     bachelorDegree: "",
@@ -45,7 +47,8 @@ const UserProfile = () => {
     sscCurrentInstitute: "",
 
     // Personal Information
-    email: "",
+    // email: "",
+    location: "",
     additionalNumber: "",
     address: "",
     gender: "",
@@ -66,6 +69,26 @@ const UserProfile = () => {
     emergencyNumber: "",
     emergencyAddress: "",
   });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const email = localStorage.getItem("email");
+      if (!email) return;
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/auth/profile/get?email=${email}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setFormData(data.profile); // ✅ Load saved profile from database
+        }
+      } catch (error) {
+        console.error("❌ Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // useEffect(() => {
   //   const rootElement = document.documentElement;
@@ -93,42 +116,132 @@ const UserProfile = () => {
 
   const [error, setError] = useState("");
 
+  // const handleChange = (e) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  // const handleSave = async (e) => {
+  //   e.preventDefault();
+
+  //   const token = localStorage.getItem("token");
+  //   const email = localStorage.getItem("email"); // ✅ Get email from localStorage
+  //   const name = localStorage.getItem("name"); // ✅ Get name from localStorage
+
+  //   if (!token || !email || !name) {
+  //     alert("You must be logged in to update your profile.");
+  //     return;
+  //   }
+
+  //   const profileData = {
+  //     email,
+  //     name, // ✅ Always send logged-in name
+  //     address: formData.address,
+  //     gender: formData.gender,
+  //     location: formData.location,
+  //     additionalNumber: formData.additionalNumber,
+  //     dateOfBirth: formData.dateOfBirth,
+  //     nationality: formData.nationality,
+  //     fathersName: formData.fathersName,
+  //     mothersName: formData.mothersName,
+  //     religion: formData.religion,
+  //     birthCertificateNo: formData.birthCertificateNo,
+  //     facebookProfileLink: formData.facebookProfileLink,
+  //     linkedInProfileLink: formData.linkedInProfileLink,
+  //     fathersNumber: formData.fathersNumber,
+  //     mothersNumber: formData.mothersNumber,
+  //     bachelorInstitute: formData.bachelorInstitute,
+  //     bachelorDegree: formData.bachelorDegree,
+  //     bachelorMajor: formData.bachelorMajor,
+  //     hscInstitute: formData.hscInstitute,
+  //     hscDegree: formData.hscDegree,
+  //     hscMajor: formData.hscMajor,
+  //     sscInstitute: formData.sscInstitute,
+  //     sscDegree: formData.sscDegree,
+  //     sscMajor: formData.sscMajor,
+  //   };
+
+  //   console.log("📤 Sending Profile Data:", profileData);
+
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/auth/profile/update", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify(profileData),
+  //     });
+
+  //     const data = await response.json();
+  //     console.log("📥 Response Received:", data);
+
+  //     if (data.success) {
+  //       alert("Profile updated successfully!");
+  //       console.log("✅ Updated Profile:", data.profile);
+  //     } else {
+  //       alert("Profile update failed: " + data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Profile Update Error:", error);
+  //     alert("Server error. Try again later.");
+  //   }
+  // };
 
   const handleSave = async (e) => {
     e.preventDefault();
-  
+
     const token = localStorage.getItem("token");
-    if (!token) {
-      setError("You must be logged in to save your profile.");
+    const email = localStorage.getItem("email");
+    const name = localStorage.getItem("name");
+
+    if (!token || !email || !name) {
+      alert("You must be logged in to update your profile.");
       return;
     }
-  
+
+    let profileData = {
+      email,
+      name,
+      ...formData,
+    };
+
+    // ✅ Remove empty values from the object
+    Object.keys(profileData).forEach((key) => {
+      if (!profileData[key]) delete profileData[key];
+    });
+
+    console.log("📤 Sending Profile Data:", profileData);
+
     try {
-      const response = await fetch("http://localhost:5000/api/profile/update", {
+      const response = await fetch("http://localhost:5000/api/auth/profile/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(profileData),
       });
-  
+
       const data = await response.json();
-  
+      console.log("📥 Response Received:", data);
+
       if (data.success) {
         alert("Profile updated successfully!");
+        setFormData(data.profile); // ✅ Update state with new profile data
+        localStorage.setItem("profile", JSON.stringify(data.profile)); // ✅ Save updated profile in Local Storage
       } else {
-        setError(data.message || "Profile update failed.");
+        alert("Profile update failed: " + data.message);
       }
     } catch (error) {
-      console.error("Profile Save Error:", error);
-      setError("Server error. Try again later.");
+      console.error("❌ Profile Update Error:", error);
+      alert("Server error. Try again later.");
     }
   };
-  
 
   return (
     <>
@@ -153,10 +266,15 @@ const UserProfile = () => {
                         value={formData[`${level}Institute`] || ""} // Ensuring default empty string
                         onChange={handleChange}
                         required
-                        style={{ color: "white" }}
+                        style={{
+                          color: localStorage.getItem("theme") === "dark" ? "white" : "black",
+                          backgroundColor: localStorage.getItem("theme") === "dark" ? "#333" : "white",
+                          borderColor: localStorage.getItem("theme") === "dark" ? "#555" : "#ccc",
+                        }}
                       />
                     </Form.Group>
                   </Col>
+
                   <Col md={6}>
                     <Form.Group>
                       <Form.Label className='text-white'>
@@ -376,9 +494,14 @@ const UserProfile = () => {
                         Location<span className='text-danger'>*</span>
                       </Form.Label>
                       <Form.Select
-                        name={`${level1}location`}
-                        value={formData[`${level1}location`] || ""} // Ensure a default empty value
-                        onChange={(e) => setFormData({ ...formData, [`${level1}location`]: e.target.value })} // Fix the key here
+                        // name={`${level1}location`}
+                        // value={formData[`${level1}location`] || ""} // Ensure a default empty value
+                        // onChange={(e) => setFormData({ ...formData, [`${level1}location`]: e.target.value })} // Fix the key here
+                        // required>
+                        type='text'
+                        name='location'
+                        value={formData.location || ""}
+                        onChange={handleChange}
                         required>
                         <option value=''>Select location</option>
                         <option value='Mirpur'>Mirpur</option>
@@ -555,11 +678,15 @@ const UserProfile = () => {
                       </Form.Label>
                       <Form.Control
                         placeholder='Enter Email'
+                        // type='email'
+                        // name={`${level2}email`}
+                        // value={formData[`${level2}email`] || ""}
+                        // onChange={handleChange}
+                        // required
                         type='email'
-                        name={`${level2}email`}
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
+                        name='email'
+                        value={formData.email || ""}
+                        disabled // ✅ Prevent users from changing email
                       />
                     </Form.Group>
                   </Col>
@@ -572,8 +699,12 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Number'
                         type='text'
-                        name={`${level2}additionalNumber`}
-                        value={formData.additionalNumber}
+                        // name={`${level2}additionalNumber`}
+                        // value={formData[`${level2}additionalNumber`] || ""}
+                        // onChange={handleChange}
+                        // required
+                        name='additionalNumber'
+                        value={formData.additionalNumber || ""}
                         onChange={handleChange}
                         required
                       />
@@ -590,8 +721,12 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Address'
                         type='text'
-                        name={`${level2}address`}
-                        value={formData.address}
+                        // name={`${level2}address`}
+                        // value={formData[`${level2}address`] || ""}
+                        // onChange={handleChange}
+                        // required
+                        name='address'
+                        value={formData.address || ""}
                         onChange={handleChange}
                         required
                       />
@@ -603,7 +738,7 @@ const UserProfile = () => {
                         Gender<span className='text-danger'>*</span>
                       </Form.Label>
 
-                      <Form.Select
+                      {/* <Form.Select
                         name={`${level2}gender`}
                         value={formData[`${level2}gender`] || ""} // Ensure a default empty value
                         onChange={(e) => setFormData({ ...formData, [`${level2}gender`]: e.target.value })} // Fix the key here
@@ -612,6 +747,12 @@ const UserProfile = () => {
                         <option value='Male'>Male</option>
                         <option value='Female'>Female</option>
                         <option value='Trans'>Trans</option>
+                      </Form.Select> */}
+                      <Form.Select name='gender' value={formData.gender || ""} onChange={handleChange} required>
+                        <option value=''>Select Gender</option>
+                        <option value='Male'>Male</option>
+                        <option value='Female'>Female</option>
+                        <option value='Other'>Other</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>
@@ -624,10 +765,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Date of Birth'
                         type='date'
-                        name={`${level2}dateOfBirth`}
-                        value={formData.dateOfBirth}
+                        name='dateOfBirth'
+                        value={formData.dateOfBirther || ""}
                         onChange={handleChange}
                         required
+                        // value={formData[`${level2}dateOfBirth`] || ""}
+                        // onChange={handleChange}
+                        // required
                       />
                     </Form.Group>
                   </Col>
@@ -636,9 +780,13 @@ const UserProfile = () => {
                       <Form.Label className='text-white'>Religion</Form.Label>
 
                       <Form.Select
-                        name={`${level2}religion`}
-                        value={formData[`${level2}religion`] || ""} // Ensure a default empty value
-                        onChange={(e) => setFormData({ ...formData, [`${level2}religion`]: e.target.value })} // Fix the key here
+                        // name={`${level2}religion`}
+                        // value={formData[`${level2}religion`] || ""} // Ensure a default empty value
+                        // onChange={(e) => setFormData({ ...formData, [`${level2}religion`]: e.target.value })} // Fix the key here
+                        // required>
+                        name='religion'
+                        value={formData.religion || ""}
+                        onChange={handleChange}
                         required>
                         <option value=''>Select religion</option>
                         <option value='Islam'>Islam</option>
@@ -657,8 +805,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Birth Certificate No'
                         type='text'
-                        name={`${level2}birthCertificateNo`}
-                        value={formData.birthCertificateNo}
+                        // name={`${level2}birthCertificateNo`}
+                        // value={formData[`${level2}birthCertificateNo`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='birthCertificateNo'
+                        value={formData.birthCertificateNo || ""}
                         onChange={handleChange}
                         required
                       />
@@ -673,8 +826,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Nationality'
                         type='text'
-                        name={`${level2}nationality`}
-                        value={formData.nationality}
+                        // name={`${level2}nationality`}
+                        // value={formData[`${level2}nationality`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='nationality'
+                        value={formData.nationality || ""}
                         onChange={handleChange}
                         required
                       />
@@ -689,8 +847,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter FB Link'
                         type='text'
-                        name={`${level2}facebookProfileLink`}
-                        value={formData.facebookProfileLink}
+                        // name={`${level2}facebookProfileLink`}
+                        // value={formData[`${level2}facebookProfileLink`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='facebookProfileLink'
+                        value={formData.facebookProfileLink || ""}
                         onChange={handleChange}
                         required
                       />
@@ -703,8 +866,12 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter LinkedIn Link'
                         type='text'
-                        name={`${level2}linkedInProfileLink`}
-                        value={formData.linkedInProfileLink}
+                        // name={`${level2}linkedInProfileLink`}
+                        // value={formData[`${level2}linkedInProfileLink`] || ""}
+                        // onChange={handleChange}
+                        // required
+                        name='linkedInProfileLink'
+                        value={formData.linkedInProfileLink || ""}
                         onChange={handleChange}
                         required
                       />
@@ -721,8 +888,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Father Name'
                         type='text'
-                        name={`${level2}fathersName`}
-                        value={formData.fathersName}
+                        // name={`${level2}fathersName`}
+                        // value={formData[`${level2}fathersName`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='fathersName'
+                        value={formData.fathersName || ""}
                         onChange={handleChange}
                         required
                       />
@@ -737,8 +909,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Father Number'
                         type='text'
-                        name={`${level2}fathersNumber`}
-                        value={formData.fathersNumber}
+                        // name={`${level2}fathersNumber`}
+                        // value={formData[`${level2}fathersNumber`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='fathersNumber'
+                        value={formData.fathersNumber || ""}
                         onChange={handleChange}
                         required
                       />
@@ -755,8 +932,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Mother Name'
                         type='text'
-                        name={`${level2}mothersName`}
-                        value={formData.mothersName}
+                        // name={`${level2}mothersName`}
+                        // value={formData[`${level2}mothersName`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='mothersName'
+                        value={formData.mothersName || ""}
                         onChange={handleChange}
                         required
                       />
@@ -771,8 +953,13 @@ const UserProfile = () => {
                       <Form.Control
                         placeholder='Enter Mother Number'
                         type='text'
-                        name={`${level2}mothersNumber`}
-                        value={formData.mothersNumber}
+                        // name={`${level2}mothersNumber`}
+                        // value={formData[`${level2}mothersNumber`] || ""}
+                        // onChange={handleChange}
+                        // required
+
+                        name='mothersNumber'
+                        value={formData.mothersNumber || ""}
                         onChange={handleChange}
                         required
                       />
@@ -795,7 +982,7 @@ const UserProfile = () => {
                         placeholder='Enter Name'
                         type='text'
                         name={`${level3}emergencyName`}
-                        value={formData.emergencyName}
+                        value={formData[`${level3}emergencyName`] || ""}
                         onChange={handleChange}
                         required
                       />
@@ -809,7 +996,7 @@ const UserProfile = () => {
                         placeholder='Enter Relation'
                         type='text'
                         name={`${level3}emergencyRelation`}
-                        value={formData.emergencyRelation}
+                        value={formData[`${level3}emergencyRelation`] || ""}
                         onChange={handleChange}
                         required
                       />
@@ -825,7 +1012,7 @@ const UserProfile = () => {
                         placeholder='Enter Number'
                         type='text'
                         name={`${level3}emergencyNumber`}
-                        value={formData.emergencyNumber}
+                        value={formData[`${level3}emergencyNumber`] || ""}
                         onChange={handleChange}
                         required
                       />
@@ -839,7 +1026,7 @@ const UserProfile = () => {
                         placeholder='Enter Address'
                         type='text'
                         name={`${level3}emergencyAddress`}
-                        value={formData.emergencyAddress}
+                        value={formData[`${level3}emergencyAddress`] || ""}
                         onChange={handleChange}
                         required
                       />
@@ -849,9 +1036,20 @@ const UserProfile = () => {
               </div>
             ))}
             <div className='d-flex justify-content-center mt-3'>
-              <Button
+              {/* <Button
                 style={{ backgroundColor: "rgb(40, 28, 79)", borderColor: "rgb(40, 28, 79)" }}
                 onClick={() => alert("Form Submitted Successfully")}>
+                Save
+              </Button> */}
+
+              {/* <Button style={{ backgroundColor: "rgb(40, 28, 79)", borderColor: "rgb(40, 28, 79)" }} type='submit'>
+                Save
+              </Button> */}
+
+              <Button
+                style={{ backgroundColor: "rgb(40, 28, 79)", borderColor: "rgb(40, 28, 79)" }}
+                onClick={handleSave} // ✅ Ensure it explicitly calls handleSave
+              >
                 Save
               </Button>
             </div>

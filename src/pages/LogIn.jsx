@@ -14,23 +14,59 @@ const LogIn = () => {
   const [role, setRole] = useState(""); // Role selection state
   const [error, setError] = useState({ email: false, password: false, role: false });
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError({ email: email.trim() === "", password: password.trim() === "", role: role === "" });
+
+  //   if (email.trim() !== "" && password.trim() !== "" && role !== "") {
+  //     try {
+  //       const result = await login({ email, password, role }); // Call API
+
+  //       if (result.success) {
+  //         localStorage.setItem("token", result.token);
+  //         localStorage.setItem("email", email);
+  //         localStorage.setItem("name", result.name); // ✅ Store name
+  //         localStorage.setItem("role", result.role);
+
+  //         // ✅ Automatically redirect the user based on role
+  //         if (result.role === "student") {
+  //           navigate("/TutorRequest");
+  //         } else if (result.role === "tutor") {
+  //           navigate("/Profile");
+  //         }
+  //       } else {
+  //         setError({ ...error, general: result.message || "Login failed. Try again." });
+  //       }
+  //     } catch (err) {
+  //       setError({ ...error, general: "Server error. Please try again later." });
+  //     }
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError({ email: email.trim() === "", password: password.trim() === "", role: role === "" });
 
     if (email.trim() !== "" && password.trim() !== "" && role !== "") {
       try {
-        const result = await login({ email, password, role }); // Call API
+        const result = await login({ email, password, role });
 
         if (result.success) {
-          localStorage.setItem("token", result.token); // Store token
-          localStorage.setItem("role", result.role); // Store role
+          localStorage.setItem("token", result.token);
+          localStorage.setItem("email", email);
+          localStorage.setItem("name", result.name);
+          localStorage.setItem("role", result.role);
 
-          if (result.role === "student") {
-            navigate("/TutorRequest"); // Redirect student
-          } else if (result.role === "tutor") {
-            navigate("/Profile"); // Redirect tutor
+          // ✅ Fetch profile data after login
+          const profileResponse = await fetch(`http://localhost:5000/api/auth/profile/get?email=${email}`);
+          const profileData = await profileResponse.json();
+
+          if (profileData.success) {
+            localStorage.setItem("profile", JSON.stringify(profileData.profile)); // ✅ Store profile in localStorage
           }
+
+          // ✅ Redirect user to profile
+          navigate("/Profile");
         } else {
           setError({ ...error, general: result.message || "Login failed. Try again." });
         }
