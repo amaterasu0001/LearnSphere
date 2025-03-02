@@ -65,6 +65,9 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
+import process from "process";
 import Profile from "../models/Profile.js"; // Import Profile Model
 
 const router = express.Router();
@@ -72,17 +75,55 @@ const router = express.Router();
 /* ==========================
 ✅ SIGNUP ROUTE (Register User + Create Profile)
 ========================== */
+// router.post("/signup", async (req, res) => {
+//   const { name, email, password, role } = req.body;
+
+//   try {
+//     console.log("Signup request received:", req.body);
+
+//     if (!name || !email || !password || !role) {
+//       return res.status(400).json({ success: false, message: "All fields are required, including role" });
+//     }
+
+//     if (role !== "student" && role !== "tutor") {
+//       return res.status(400).json({ success: false, message: "Invalid role selection" });
+//     }
+
+//     let user = await User.findOne({ email });
+//     if (user) return res.status(400).json({ success: false, message: "Email already exists" });
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     user = new User({ name, email, password: hashedPassword, role });
+
+//     await user.save();
+
+//     console.log("User saved successfully:", user);
+
+//     res.status(201).json({ success: true, message: "User registered successfully" });
+//   } catch (error) {
+//     console.error("Signup Error:", error.message);
+//     res.status(500).json({ success: false, message: "Server error", error: error.message });
+//   }
+// });
+
 router.post("/signup", async (req, res) => {
   const { name, email, password, role } = req.body;
 
   try {
     console.log("Signup request received:", req.body);
 
-    // Validate inputs
+    // ✅ Check if all fields are provided
     if (!name || !email || !password || !role) {
       return res.status(400).json({ success: false, message: "All fields are required, including role" });
     }
 
+    // ✅ Validate Email Format (Only Real Emails Allowed)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      return res.status(400).json({ success: false, message: "Invalid email format" });
+    }
+
+    // ✅ Ensure role is either "student" or "tutor"
     if (role !== "student" && role !== "tutor") {
       return res.status(400).json({ success: false, message: "Invalid role selection" });
     }
@@ -90,34 +131,11 @@ router.post("/signup", async (req, res) => {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ success: false, message: "Email already exists" });
 
-    // Hash password and save user
+    // ✅ Hash password and save user
     const hashedPassword = await bcrypt.hash(password, 10);
     user = new User({ name, email, password: hashedPassword, role });
 
     await user.save();
-
-    // ✅ Create a Profile Entry for the User
-    // const profile = new Profile({
-    //   email,
-    //   name,
-    //   location: req.body.location || null,
-    //   address: req.body.address || null,
-    //   gender: req.body.gender || null,
-    //   additionalNumber: req.body.additionalNumber || null,
-    //   dateOfBirth: req.body.dateOfBirth || null,
-    //   nationality: req.body.nationality || null,
-    //   fathersName: req.body.fathersName || null,
-    //   mothersName: req.body.mothersName || null,
-    //   religion: req.body.religion || null,
-    //   birthCertificateNo: req.body.birthCertificateNo || null,
-    //   facebookProfileLink: req.body.facebookProfileLink || null,
-    //   linkedInProfileLink: req.body.linkedInProfileLink || null,
-    //   fathersNumber: req.body.fathersNumber || null,
-    //   mothersNumber: req.body.mothersNumber || null,
-    // });
-
-    //await profile.save();
-
     console.log("User saved successfully:", user);
 
     res.status(201).json({ success: true, message: "User registered successfully" });
@@ -200,6 +218,64 @@ router.post("/profile/update", async (req, res) => {
     res.status(200).json({ success: true, message: "Profile updated successfully", profile });
   } catch (error) {
     console.error("❌ Profile Update Error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Email not found" });
+    }
+
+    // ✅ Generate a random 6-digit code
+    const recoveryCode = crypto.randomInt(100000, 999999).toString();
+    user.resetCode = recoveryCode;
+    user.resetCodeExpires = Date.now() + 10 * 60 * 1000; // Code expires in 10 minutes
+    await user.save();
+
+    // ✅ Send email with recovery code
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL, // Your email
+        pass: process.env.EMAIL_PASSWORD, // Your email password
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Support" <${process.env.EMAIL}>`,
+      to: email,
+      subject: "Password Reset Code",
+      text: `Your password reset code is: ${recoveryCode}. It expires in 10 minutes.`,
+    });
+
+    res.json({ success: true, message: "Recovery code sent to your email." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { email, code, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user || user.resetCode !== code || user.resetCodeExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: "Invalid or expired code" });
+    }
+
+    // ✅ Hash new password and save
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetCode = undefined;
+    user.resetCodeExpires = undefined;
+    await user.save();
+
+    res.json({ success: true, message: "Password reset successfully!" });
+  } catch (error) {
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 });

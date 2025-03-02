@@ -13,6 +13,9 @@ const LogIn = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(""); // Role selection state
   const [error, setError] = useState({ email: false, password: false, role: false });
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -75,6 +78,54 @@ const LogIn = () => {
       }
     }
   };
+
+  const handleForgotPassword = async () => {
+    if (!forgotEmail.trim()) {
+      setResetMessage("Please enter your registered email.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setResetMessage("Recovery code sent! Check your email.");
+      } else {
+        setResetMessage(data.message);
+      }
+    } catch (error) {
+      setResetMessage("Server error, please try again later.");
+    }
+  };
+
+  {
+    showForgotPassword && (
+      <div className='modal-overlay'>
+        <div className='modal-content'>
+          <h4>Forgot Password</h4>
+          <input
+            type='email'
+            placeholder='Enter your registered email'
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            className='form-control'
+          />
+          <button className='btn btn-primary mt-2' onClick={handleForgotPassword}>
+            Send Recovery Code
+          </button>
+          {resetMessage && <p className='text-danger'>{resetMessage}</p>}
+          <button className='btn btn-secondary mt-2' onClick={() => setShowForgotPassword(false)}>
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -160,10 +211,14 @@ const LogIn = () => {
               </div>
               {error.general && <div className='text-danger small mt-2'>{error.general}</div>}
               <div className='text-end'>
-                <a href='#' className='text-decoration-none'>
+                <a href='#' className='text-decoration-none' onClick={() => setShowForgotPassword(true)}>
                   Forgot Password?
                 </a>
+                {/* <button className='btn btn-primary mt-2' onClick={() => navigate("/reset-password")}>
+                  Enter Recovery Code
+                </button> */}
               </div>
+
               <button
                 type='submit'
                 className='btn w-100 mt-3'

@@ -26,12 +26,46 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Selected Role Before Submission:", formData.role);
+  //   setError({
+  //     name: formData.name.trim() === "",
+  //     email: formData.email.trim() === "",
+  //     password: formData.password.trim() === "",
+  //     confirmPassword: formData.confirmPassword.trim() === "",
+  //     role: formData.role === "",
+  //   });
+
+  //   if (formData.password !== formData.confirmPassword) {
+  //     setError((prev) => ({ ...prev, confirmPassword: true }));
+  //     return;
+  //   }
+
+  //   if (!formData.role) {
+  //     console.log("No role selected!");
+  //     return;
+  //   }
+
+  //   const result = await signup(formData);
+  //   console.log("API Response:", result);
+
+  //   if (result.success) {
+  //     setSuccess("Account created successfully! Please log in.");
+  //     setFormData({ name: "", email: "", password: "", confirmPassword: "", role: "" });
+  //   } else {
+  //     setError((prev) => ({ ...prev, general: result.message || "Signup failed. Try again." }));
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     console.log("Selected Role Before Submission:", formData.role); // Debug log
+
     setError({
       name: formData.name.trim() === "",
       email: formData.email.trim() === "",
@@ -40,6 +74,14 @@ const SignUp = () => {
       role: formData.role === "",
     });
 
+    // ✅ Check if the email is valid
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation pattern
+    if (!emailPattern.test(formData.email)) {
+      setError((prev) => ({ ...prev, email: true }));
+      return;
+    }
+
+    // ✅ Ensure passwords match
     if (formData.password !== formData.confirmPassword) {
       setError((prev) => ({ ...prev, confirmPassword: true }));
       return;
