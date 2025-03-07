@@ -93,3 +93,8 @@ footer {
   width: 100%;
   font-size: 14px;
 }
+.custom-disabled {
+  background-color: #e9ecef !important; /* Light Gray */
+  color: #6c757d !important; /* Muted Text */
+  cursor: not-allowed;
+}
