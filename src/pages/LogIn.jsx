@@ -68,8 +68,12 @@ const LogIn = () => {
             localStorage.setItem("profile", JSON.stringify(profileData.profile)); // ✅ Store profile in localStorage
           }
 
-          // ✅ Redirect user to profile
-          navigate("/Profile");
+          // ✅ Redirect user based on role
+          if (result.role === "tutor") {
+            navigate("/Profile"); // Redirect tutors to the Profile page
+          } else if (result.role === "student") {
+            navigate("/TutorRequest"); // Redirect students to the TutorRequest page
+          }
         } else {
           setError({ ...error, general: result.message || "Login failed. Try again." });
         }
