@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/Navbar";
 import PropTypes from "prop-types";
 
-const TutorJobCard = ({ id, title, date, type, salary, subjects, location, preference }) => {
+const TutorJobCard = ({
+  id,
+  title,
+  date,
+  type,
+  salary,
+  subjects,
+  location,
+  preference,
+}) => {
   return (
-    <div className='card shadow-sm p-3 mb-4'>
-      <div className='card-body'>
-        <h5 className='card-title text-primary'>{title}</h5>
-        <p className='card-text'>
+    <div className="card shadow-sm p-3 mb-4">
+      <div className="card-body">
+        <h5 className="card-title text-primary">{title}</h5>
+        <p className="card-text">
           <strong>Job ID:</strong> {id} | <strong>Posted:</strong> {date}
         </p>
         <p>
@@ -26,13 +35,17 @@ const TutorJobCard = ({ id, title, date, type, salary, subjects, location, prefe
         </p>
         <p>
           <strong>Preference:</strong>{" "}
-          <span className={preference === "Female" ? "text-danger" : "text-secondary"}>
+          <span
+            className={
+              preference === "Female" ? "text-danger" : "text-secondary"
+            }
+          >
             {preference} tutor preferred
           </span>
         </p>
-        <div className='d-flex justify-content-between'>
-          <button className='btn btn-primary'>Details</button>
-          <button className='btn btn-outline-secondary'>Share</button>
+        <div className="d-flex justify-content-between">
+          <button className="btn btn-primary">Details</button>
+          <button className="btn btn-outline-secondary">Share</button>
         </div>
       </div>
     </div>
@@ -52,15 +65,28 @@ TutorJobCard.propTypes = {
 
 const TutorJobList = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check if user is logged in (Assume user data is stored in localStorage)
-  const isLoggedIn = localStorage.getItem("user");
+  // ✅ Check login status dynamically
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   if (!isLoggedIn) {
     return (
-      <div className='container text-center mt-5'>
-        <h3 className='text-danger'>You must log in first to view tutor jobs.</h3>
-        <button className='btn btn-primary mt-3' onClick={() => navigate("/login")}>
+      <div className="container text-center mt-5">
+        <h3 className="text-danger">
+          You must log in first to view tutor jobs.
+        </h3>
+        <button
+          className="btn btn-primary mt-3"
+          onClick={() => navigate("/login")}
+        >
           Go to Login
         </button>
       </div>
@@ -84,13 +110,21 @@ const TutorJobList = () => {
       date: "Feb 15, 2025",
       type: "Home Tutoring",
       salary: "10000",
-      subjects: ["General Maths", "Physics", "Chemistry", "Biology", "Higher Maths", "Bangladesh & Global Studies"],
+      subjects: [
+        "General Maths",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Higher Maths",
+        "Bangladesh & Global Studies",
+      ],
       location: "Mohammadpur, Dhaka",
       preference: "Any",
     },
     {
       id: "158068",
-      title: "Need English Medium (Cambridge) Tutor For Standard 8 Student-4 Days/Week",
+      title:
+        "Need English Medium (Cambridge) Tutor For Standard 8 Student-4 Days/Week",
       date: "Feb 11, 2025",
       type: "Home Tutoring",
       salary: "8000",
@@ -100,7 +134,8 @@ const TutorJobList = () => {
     },
     {
       id: "152957",
-      title: "Need English Medium (Ed Excel) Tutor For Standard 3 Student-4 Days/Week",
+      title:
+        "Need English Medium (Ed Excel) Tutor For Standard 3 Student-4 Days/Week",
       date: "Jan 08, 2025",
       type: "Home Tutoring",
       salary: "4000",
@@ -112,10 +147,10 @@ const TutorJobList = () => {
 
   return (
     <>
-      <div className='container mt-4'>
-        <div className='row'>
+      <div className="container mt-4">
+        <div className="row">
           {jobs.map((job, index) => (
-            <div key={index} className='col-md-6'>
+            <div key={index} className="col-md-6">
               <TutorJobCard {...job} />
             </div>
           ))}
