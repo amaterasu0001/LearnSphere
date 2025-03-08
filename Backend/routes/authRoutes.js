@@ -141,7 +141,7 @@ router.post("/tutor-request", async (req, res) => {
       preferredstyles,
       district,
       area,
-
+      studentDetails,
       studentClass,
       instituteName,
       subjects,
@@ -173,7 +173,7 @@ router.post("/tutor-request", async (req, res) => {
             preferredstyles,
             district,
             area,
-
+            studentDetails,
             studentClass,
             instituteName,
             subjects,
@@ -197,7 +197,7 @@ router.post("/tutor-request", async (req, res) => {
         preferredstyles,
         district,
         area,
-
+        studentDetails,
         studentClass,
         instituteName,
         subjects,

@@ -18,6 +18,7 @@ const tutorRequestSchema = new mongoose.Schema(
     fathersNumber: { type: String, default: null },
     address: { type: String, default: null },
     mobile: { type: String, default: null },
+    studentDetails: { type: String, default: null },
   },
   { timestamps: true }
 );

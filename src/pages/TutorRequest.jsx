@@ -8,21 +8,20 @@ import Footer from "../components/Footer";
 const TutorRequestForm = () => {
   const [formData, setFormData] = useState({
     studentEmail: "",
-    studentName: "",
-    district: "",
-    area: "",
+    studentName: "", //
+    district: "", //
+    area: "", //
     studentClass: "",
-    subjects: "",
+    subjects: "", //
     instituteName: "",
     fathersNumber: "",
     mothersNumber: "",
-    preferredstyles: "",
+    preferredstyles: "", //
     studentDetails: "",
-    schoolName: "",
     daysPerWeek: "",
     studentGender: "",
-    salaryRange: "",
-    tutorGender: "",
+    salaryRange: "", //
+    tutorGender: "", //
     address: "",
     mobile: "",
   });
