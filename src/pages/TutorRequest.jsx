@@ -11,7 +11,6 @@ const TutorRequestForm = () => {
     studentName: "",
     district: "",
     area: "",
-    //medium: "",
     studentClass: "",
     subjects: "",
     instituteName: "",
@@ -28,11 +27,31 @@ const TutorRequestForm = () => {
     mobile: "",
   });
 
-  useEffect(() => {
-    const email = localStorage.getItem("email") || "";
-    const name = localStorage.getItem("name") || "";
-    const role = localStorage.getItem("role");
+  const email = localStorage.getItem("email") || "";
+  const name = localStorage.getItem("name") || "";
+  const role = localStorage.getItem("role");
 
+  // 🔹 **Fetch Tutor Request Function (useEffect & handleSubmit er moddhe use kora jabe)**
+  const fetchTutorRequest = async () => {
+    if (!email) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/tutor-request/${email}`);
+      const data = await response.json();
+
+      if (data.success && data.tutorRequest) {
+        setFormData((prevData) => ({
+          ...prevData,
+          ...data.tutorRequest,
+        }));
+      }
+    } catch (error) {
+      console.error("❌ Error fetching tutor request:", error);
+    }
+  };
+
+  // 🔹 **UseEffect to Load Data Initially**
+  useEffect(() => {
     if (role === "student") {
       setFormData((prevData) => ({
         ...prevData,
@@ -40,50 +59,17 @@ const TutorRequestForm = () => {
         studentName: name,
       }));
 
-      // Fetch tutor request data if it exists
-      const fetchTutorRequest = async () => {
-        try {
-          const response = await fetch(`http://localhost:5000/api/auth/tutor-request/${email}`);
-          const data = await response.json();
-
-          if (data.success && data.tutorRequest) {
-            setFormData((prevData) => ({
-              ...prevData,
-              ...data.tutorRequest,
-            }));
-          }
-        } catch (error) {
-          console.error("❌ Error fetching tutor request:", error);
-        }
-      };
-
-      fetchTutorRequest();
+      fetchTutorRequest(); // ✅ Initial data fetch
     }
-  }, []);
+  }, [email]);
 
+  // 🔹 **Handle Change Function**
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value, type, selectedOptions } = e.target;
-
-  //   if (type === "select-multiple") {
-  //     // If the input is a multiple select, handle it as an array
-  //     const selectedValues = Array.from(selectedOptions, (option) => option.value);
-  //     setFormData({
-  //       ...formData,
-  //       [name]: selectedValues, // Store the selected values as an array
-  //     });
-  //   } else {
-  //     setFormData({
-  //       ...formData,
-  //       [name]: value, // Update other fields normally
-  //     });
-  //   }
-  // };
-
+  // 🔹 **Handle Submit Function**
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -106,25 +92,9 @@ const TutorRequestForm = () => {
       const data = await response.json();
       if (data.success) {
         alert("✅ Tutor request submitted/updated successfully!");
-        setFormData({
-          studentEmail: localStorage.getItem("role") === "student" ? localStorage.getItem("email") : "",
-          studentName: localStorage.getItem("role") === "student" ? localStorage.getItem("name") : "",
-          district: "",
-          area: "",
-          studentClass: "",
-          subjects: "",
-          instituteName: "",
-          fathersNumber: "",
-          mothersNumber: "",
-          studentDetails: "",
-          schoolName: "",
-          daysPerWeek: "",
-          studentGender: "",
-          salaryRange: "",
-          tutorGender: "",
-          address: "",
-          mobile: "",
-        });
+
+        // ✅ **Fetch Updated Data Again After Submission**
+        fetchTutorRequest(); // ✅ Updated data will reload immediately
       } else {
         alert("❌ Failed to submit/update request: " + data.message);
       }

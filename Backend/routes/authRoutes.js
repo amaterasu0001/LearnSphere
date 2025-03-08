@@ -246,8 +246,12 @@ router.get("/tutor-request/:email", async (req, res) => {
 ✅ GET ALL TUTOR REQUESTS
 ========================== */
 router.get("/tutor-requests", async (req, res) => {
+  console.log("✅ Tutor Requests API Hit");
+
   try {
     const tutorRequests = await TutorRequest.find();
+    console.log("📦 Data Fetched from DB:", tutorRequests); // ✅ Debug
+
     res.status(200).json({ success: true, tutorRequests });
   } catch (error) {
     console.error("❌ Error fetching tutor requests:", error);
