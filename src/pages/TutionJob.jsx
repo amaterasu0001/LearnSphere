@@ -134,44 +134,69 @@
 // };
 
 // export default TutorJobList;
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const TuitionJobs = () => {
   const [tutorJobs, setTutorJobs] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/tutor-requests")
-      .then((res) => res.json())
+    console.log("Fetching tutor requests...");
+    fetch("http://localhost:5000/api/auth/tutor-requests")
+      .then((res) => {
+        console.log("Response received:", res);
+        return res.json();
+      })
       .then((data) => {
-        console.log("📥 API Response:", data); // ✅ Debug Response
+        console.log("API Response Data:", data); // Debugging log
         if (data.success && data.tutorRequests.length > 0) {
           setTutorJobs(data.tutorRequests);
         } else {
           console.warn("⚠️ No tutor requests found.");
         }
       })
-      .catch((err) => console.error("❌ Fetch error:", err));
+      .catch((err) => {
+        console.error("❌ Fetch error:", err);
+      });
   }, []);
 
   return (
-    <div>
+    <div className='container mt-4'>
       <h2>📚 Available Tuition Jobs</h2>
       {tutorJobs.length === 0 ? (
         <p>⚠️ No tuition jobs available</p>
       ) : (
         tutorJobs.map((job, index) => (
-          <div key={index} className='job-card'>
-            <h3>👩‍🎓 {job.studentName} needs a tutor</h3>
-            <p>
-              <strong>📍 Location:</strong> {job.area}, {job.district}
-            </p>
-            <p>
-              <strong>📖 Subjects:</strong> {job.subjects.join(", ")}
-            </p>
-            <p>
-              <strong>💰 Salary:</strong> {job.salaryRange} BDT
-            </p>
-            <button>Apply Now</button>
+          <div key={index} className='card shadow-sm p-3 mb-4'>
+            <div className='card-body'>
+              <h5 className='card-title text-primary'>{job.studentName} needs a tutor</h5>
+              <p className='card-text'>
+                <strong>Job ID:</strong> {job._id} | <strong>Posted:</strong>{" "}
+                {new Date(job.createdAt).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Tuition Type:</strong> {job.preferredstyles}
+              </p>
+              <p>
+                <strong>Salary:</strong> {job.salaryRange} BDT
+              </p>
+              <p>
+                <strong>Subjects:</strong> {job.subjects.join(", ")}
+              </p>
+              <p>
+                <strong>Location:</strong> {job.area}, {job.district}
+              </p>
+              <p>
+                <strong>Preference:</strong>{" "}
+                <span className={job.tutorGender === "Female" ? "text-danger" : "text-secondary"}>
+                  {job.tutorGender} tutor preferred
+                </span>
+              </p>
+              <div className='d-flex justify-content-between'>
+                <button className='btn btn-primary'>Details</button>
+                <button className='btn btn-outline-secondary'>Share</button>
+              </div>
+            </div>
           </div>
         ))
       )}
