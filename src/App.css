@@ -83,7 +83,6 @@
   filter: blur(5px);
   transition: filter 0.3s ease-in-out;
 }
-
 footer {
   color: white;
   text-align: center;
@@ -97,28 +96,4 @@ footer {
   background-color: #e9ecef !important; /* Light Gray */
   color: #6c757d !important; /* Muted Text */
   cursor: not-allowed;
-}
-
-/* Dark Mode Styles */
-.dark-mode {
-  background-color: black;
-  color: white;
-}
-
-.dark-mode-card {
-  background-color: #333; /* Darker background for cards */
-  color: white;
-  border: 1px solid #444; /* Optional: Add a border for better contrast */
-}
-
-/* Light Mode Styles */
-.light-mode {
-  background-color: white;
-  color: black;
-}
-
-.light-mode-card {
-  background-color: white;
-  color: black;
-  border: 1px solid #ddd; /* Optional: Add a border for better contrast */
 }

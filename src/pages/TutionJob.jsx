@@ -47,7 +47,9 @@ const TuitionJobs = () => {
         <p>⚠️ No tuition jobs available</p>
       ) : (
         tutorJobs.map((job, index) => (
-          <div key={index} className={`card shadow-sm p-3 mb-4 ${isDarkMode ? "dark-mode-card" : "light-mode-card"}`}>
+          <div
+            key={index}
+            className={`container shadow-sm p-3 mb-4 ${isDarkMode ? "dark-mode-card" : "light-mode-card"}`}>
             <div className='card-body'>
               <h5 className='card-title text-primary'>{job.studentName} needs a tutor</h5>
               <p className='card-text'>
