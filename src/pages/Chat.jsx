@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:5000");
 
 const Chat = () => {
-  const { studentId } = useParams(); // ✅ Get studentId from params
+  const { studentId } = useParams();
   const userId = localStorage.getItem("userId");
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (userId) {
@@ -16,7 +17,6 @@ const Chat = () => {
       socket.emit("joinRoom", { senderId: userId, receiverId: studentId });
     }
 
-    // ✅ Fetch existing messages from backend
     const fetchMessages = async () => {
       try {
         const response = await fetch(`/api/chat/${userId}/${studentId}`);
@@ -29,9 +29,9 @@ const Chat = () => {
 
     fetchMessages();
 
-    // ✅ Handle incoming messages from socket
     socket.on("newMessage", (message) => {
       setMessages((prev) => [...prev, message]);
+      scrollToBottom(); // ✅ Auto-scroll on new message
     });
 
     return () => {
@@ -39,12 +39,20 @@ const Chat = () => {
     };
   }, [userId, studentId]);
 
-  // ✅ Send message to backend and socket
+  // ✅ Auto-scroll to bottom
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // ✅ Send Message
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
     try {
-      // ✅ Save to database using API
       const response = await fetch("/api/chat/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,13 +66,11 @@ const Chat = () => {
       const data = await response.json();
 
       if (data.success) {
-        // ✅ Emit message through socket
         socket.emit("sendMessage", {
           senderId: userId,
           receiverId: studentId,
           message: newMessage,
         });
-
         setNewMessage("");
       }
     } catch (error) {
@@ -73,23 +79,136 @@ const Chat = () => {
   };
 
   return (
-    <div>
-      <div>
-        {messages.map((msg, index) => (
-          <p key={index}>
-            {msg.senderId === userId ? "You: " : "Student: "} {msg.message}
-          </p>
-        ))}
+    <div style={styles.container}>
+      {/* ✅ Chat Header */}
+      <div style={styles.header}>
+        <h2 style={styles.title}>Chat with Student</h2>
       </div>
-      <input
-        type="text"
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={sendMessage}>Send</button>
+
+      {/* ✅ Chat Messages */}
+      <div style={styles.messageContainer}>
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            style={{
+              ...styles.messageBubble,
+              alignSelf: msg.senderId === userId ? "flex-end" : "flex-start",
+              backgroundColor: msg.senderId === userId ? "#4CAF50" : "#f1f1f1",
+              color: msg.senderId === userId ? "#ffffff" : "#333333",
+            }}
+          >
+            <p style={styles.messageText}>{msg.message}</p>
+            <span style={styles.timestamp}>
+              {new Date(msg.createdAt).toLocaleTimeString()}
+            </span>
+          </div>
+        ))}
+        {/* ✅ Invisible div to auto-scroll */}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* ✅ Input Field */}
+      <div style={styles.inputContainer}>
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Type a message..."
+          style={styles.input}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        />
+        <button onClick={sendMessage} style={styles.sendButton}>
+          Send
+        </button>
+      </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "90vh",
+    width: "100%",
+    maxWidth: "600px",
+    margin: "0 auto",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "#f9f9f9",
+    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+    overflow: "hidden",
+  },
+  header: {
+    padding: "16px",
+    backgroundColor: "#312750", // ✅ Changed header background to extracted color
+    color: "#fff",
+    fontSize: "18px",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  title: {
+    margin: 0,
+  },
+  messageContainer: {
+    flex: 1,
+    padding: "16px",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  },
+  messageBubble: {
+    padding: "12px 16px",
+    borderRadius: "18px",
+    maxWidth: "70%",
+    wordWrap: "break-word",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+  },
+  messageText: {
+    fontSize: "16px",
+    margin: 0,
+  },
+  timestamp: {
+    fontSize: "12px",
+    color: "#bbb",
+    alignSelf: "flex-end",
+  },
+  inputContainer: {
+    display: "flex",
+    padding: "12px",
+    backgroundColor: "#f1f1f1",
+    borderTop: "1px solid #ddd",
+    alignItems: "center",
+    gap: "8px",
+  },
+  input: {
+    flex: 1,
+    padding: "10px",
+    borderRadius: "20px",
+    border: "1px solid #ccc",
+    outline: "none",
+    fontSize: "16px",
+    backgroundColor: "#fff",
+    color: "#000",
+    transition: "border-color 0.2s",
+  },
+  sendButton: {
+    padding: "10px 20px",
+    backgroundColor: "#312750", // ✅ Changed button color to extracted color
+    color: "#fff",
+    border: "none",
+    borderRadius: "20px",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+    fontSize: "16px",
+    "&:hover": {
+      backgroundColor: "#4e3c71",
+    },
+  },
 };
 
 export default Chat;
