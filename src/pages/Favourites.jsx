@@ -4,16 +4,13 @@ import { FaHeart } from "react-icons/fa"; // Import Love Icon
 const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem("theme") === "dark" ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+    localStorage.getItem("theme") === "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches
   );
 
   // ✅ Handle Dark Mode Instantly (No Button Required)
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       setIsDarkMode(true);
@@ -69,11 +66,9 @@ const Favourites = () => {
       if (!userId) return;
 
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/auth/favourite/get/${userId}`
-        );
+        const response = await fetch(`http://localhost:5000/api/auth/favourite/get/${userId}`);
         const data = await response.json();
-
+        //hlw
         if (data.success) {
           setFavourites(data.favourites);
         }
@@ -86,27 +81,20 @@ const Favourites = () => {
   }, []);
 
   return (
-    <div className="container mt-4">
+    <div className='container mt-4'>
       {/* ✅ Title and Love Icon */}
       <div
-        className="d-flex align-items-center mb-4"
+        className='d-flex align-items-center mb-4'
         style={{
           color: isDarkMode ? "#ffffff" : "#000000", // ✅ Dynamic text color
-        }}
-      >
+        }}>
         {/* ✅ Left aligned heart icon */}
-        <FaHeart
-          size={24}
-          color="#ff4d4d"
-          style={{ marginRight: "8px", cursor: "pointer" }}
-        />
-        <h2 className="mb-0">Favourite Tuition Jobs</h2>
+        <FaHeart size={24} color='#ff4d4d' style={{ marginRight: "8px", cursor: "pointer" }} />
+        <h2 className='mb-0'>Favourite Tuition Jobs</h2>
       </div>
 
       {favourites.length === 0 ? (
-        <p style={{ color: isDarkMode ? "#bbbbbb" : "#333333" }}>
-          No favourite jobs found
-        </p>
+        <p style={{ color: isDarkMode ? "#bbbbbb" : "#333333" }}>No favourite jobs found</p>
       ) : (
         favourites.map((favourite) => {
           const job = favourite.studentId;
@@ -114,19 +102,16 @@ const Favourites = () => {
           return (
             <div
               key={job._id}
-              className="card shadow-sm p-3 mb-4"
+              className='card shadow-sm p-3 mb-4'
               style={{
                 backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
                 color: isDarkMode ? "#f0f0f0" : "#000000",
                 borderColor: isDarkMode ? "#333" : "#ccc",
                 transition: "background-color 0.3s ease, color 0.3s ease",
-              }}
-            >
-              <div className="card-body">
+              }}>
+              <div className='card-body'>
                 {/* ✅ Job Title */}
-                <h5 className="card-title text-primary">
-                  {job.studentName} needs a tutor
-                </h5>
+                <h5 className='card-title text-primary'>{job.studentName} needs a tutor</h5>
 
                 {/* ✅ Job Details */}
                 <p>
@@ -147,13 +132,7 @@ const Favourites = () => {
                 </p>
                 <p>
                   <strong>Preference:</strong>{" "}
-                  <span
-                    className={
-                      job.tutorGender === "Female"
-                        ? "text-danger"
-                        : "text-secondary"
-                    }
-                  >
+                  <span className={job.tutorGender === "Female" ? "text-danger" : "text-secondary"}>
                     {job.tutorGender} tutor preferred
                   </span>
                 </p>
