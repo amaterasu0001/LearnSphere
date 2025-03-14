@@ -37,25 +37,13 @@ const Favourites = () => {
       }
     };
 
-    const interval = setInterval(() => {
-      const currentTheme = localStorage.getItem("theme");
-      if (currentTheme === "dark" && !isDarkMode) {
-        setIsDarkMode(true);
-        document.body.classList.add("dark-mode");
-      } else if (currentTheme !== "dark" && isDarkMode) {
-        setIsDarkMode(false);
-        document.body.classList.remove("dark-mode");
-      }
-    }, 100);
-
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", handleThemeChange);
 
     return () => {
       mediaQuery.removeEventListener("change", handleThemeChange);
-      clearInterval(interval);
     };
-  }, [isDarkMode]);
+  }, []);
 
   // ✅ Fetch Favourites
   useEffect(() => {
