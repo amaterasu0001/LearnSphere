@@ -6,30 +6,38 @@ const TuitionJobs = () => {
   const [tutorJobs, setTutorJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedJobs, setSelectedJobs] = useState([]);
 
+  // ✅ Handle Dark Mode
   useEffect(() => {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDarkMode(prefersDark);
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, []);
+
+  // ✅ Fetch Tuition Jobs from Backend
+  useEffect(() => {
     console.log("Fetching tutor requests...");
     fetch("http://localhost:5000/api/auth/tutor-requests")
-      .then((res) => {
-        console.log("Response received:", res);
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log("API Response Data:", data); // Debugging log
         if (data.success && data.tutorRequests.length > 0) {
           setTutorJobs(data.tutorRequests);
         } else {
           console.warn("⚠️ No tutor requests found.");
         }
       })
-      .catch((err) => {
-        console.error("❌ Fetch error:", err);
-      });
+      .catch((err) => console.error("❌ Fetch error:", err));
   }, []);
 
+  // ✅ Handle Modal Open/Close
   const handleDetailsClick = (job) => {
     setSelectedJob(job);
     setShowModal(true);
@@ -40,19 +48,66 @@ const TuitionJobs = () => {
     setSelectedJob(null);
   };
 
+  // ✅ Handle Add to Favourites (Backend API)
+ const handleAddToFavourites = async (jobId) => {
+   const userId = localStorage.getItem("userId"); // ✅ Changed from teacherId to userId
+   if (!userId) {
+     alert("Please log in as a tutor to select this job.");
+     return;
+   }
+
+   try {
+     const response = await fetch(
+       "http://localhost:5000/api/auth/favourite/add",
+       {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ userId, studentId: jobId }), // ✅ Send userId
+       }
+     );
+
+     const data = await response.json();
+     if (data.success) {
+       alert("✅ Added to Favourites");
+       setSelectedJobs((prev) => [...prev, jobId]);
+     } else {
+       alert(`❌ ${data.message}`);
+     }
+   } catch (error) {
+     console.error("Error adding to favourites:", error);
+   }
+ };
+
+
+ // ✅ Handle Checkbox Select
+ const handleCheckboxChange = async (jobId) => {
+   if (selectedJobs.includes(jobId)) {
+     setSelectedJobs((prev) => prev.filter((id) => id !== jobId));
+   } else {
+     await handleAddToFavourites(jobId);
+   }
+ };
+
   return (
-    <div className={`container mt-4 ${isDarkMode ? "dark-mode" : "light-mode"}`}>
+    <div className="container mt-4">
       <h2>📚 Available Tuition Jobs</h2>
       {tutorJobs.length === 0 ? (
         <p>⚠️ No tuition jobs available</p>
       ) : (
-        tutorJobs.map((job, index) => (
-          <div
-            key={index}
-            className={`container shadow-sm p-3 mb-4 ${isDarkMode ? "dark-mode-card" : "light-mode-card"}`}>
-            <div className='card-body'>
-              <h5 className='card-title text-primary'>{job.studentName} needs a tutor</h5>
-              <p className='card-text'>
+        tutorJobs.map((job) => (
+          <div key={job._id} className="container shadow-sm p-3 mb-4">
+            <div className="card-body">
+              {/* ✅ Checkbox for selecting */}
+              <input
+                type="checkbox"
+                checked={selectedJobs.includes(job._id)}
+                onChange={() => handleCheckboxChange(job._id)}
+                style={{ marginRight: "10px" }}
+              />
+              <h5 className="card-title text-primary">
+                {job.studentName} needs a tutor
+              </h5>
+              <p>
                 <strong>Job ID:</strong> {job._id} | <strong>Posted:</strong>{" "}
                 {new Date(job.createdAt).toLocaleDateString()}
               </p>
@@ -70,23 +125,32 @@ const TuitionJobs = () => {
               </p>
               <p>
                 <strong>Preference:</strong>{" "}
-                <span className={job.tutorGender === "Female" ? "text-danger" : "text-secondary"}>
+                <span
+                  className={
+                    job.tutorGender === "Female"
+                      ? "text-danger"
+                      : "text-secondary"
+                  }
+                >
                   {job.tutorGender} tutor preferred
                 </span>
               </p>
-              <div className='d-flex justify-content-between'>
-                <button className='btn btn-primary' onClick={() => handleDetailsClick(job)}>
+              <div className="d-flex justify-content-between">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleDetailsClick(job)}
+                >
                   Details
                 </button>
-                <button className='btn btn-outline-secondary'>Share</button>
+                <button className="btn btn-outline-secondary">Share</button>
               </div>
             </div>
           </div>
         ))
       )}
 
-      {/* Modal for displaying full details */}
-      <Modal show={showModal} onHide={handleCloseModal} size='lg'>
+      {/* ✅ Modal for displaying full details */}
+      <Modal show={showModal} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Job Details</Modal.Title>
         </Modal.Header>
@@ -103,19 +167,19 @@ const TuitionJobs = () => {
                 <strong>Class:</strong> {selectedJob.studentClass}
               </p>
               <p>
-                <strong>Institute Name:</strong> {selectedJob.instituteName}
+                <strong>Institute:</strong> {selectedJob.instituteName}
               </p>
               <p>
-                <strong>Father&apos;s Number:</strong> {selectedJob.fathersNumber}
+                <strong>Fathers Number:</strong> {selectedJob.fathersNumber}
               </p>
               <p>
-                <strong>Mother&apos;s Number:</strong> {selectedJob.mothersNumber}
+                <strong>Mothers Number:</strong> {selectedJob.mothersNumber}
               </p>
               <p>
                 <strong>Days Per Week:</strong> {selectedJob.daysPerWeek}
               </p>
               <p>
-                <strong>Student Gender:</strong> {selectedJob.studentGender}
+                <strong>Gender:</strong> {selectedJob.studentGender}
               </p>
               <p>
                 <strong>Address:</strong> {selectedJob.address}
@@ -130,7 +194,7 @@ const TuitionJobs = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='secondary' onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
         </Modal.Footer>
