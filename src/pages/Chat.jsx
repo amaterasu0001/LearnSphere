@@ -80,9 +80,13 @@ const Chat = () => {
 
   return (
     <div style={styles.container}>
-      {/* ✅ Chat Header */}
+      {/* ✅ Updated Header Text */}
       <div style={styles.header}>
-        <h2 style={styles.title}>Chat with Student</h2>
+        <h2 style={styles.title}>
+          {" "}
+          <i>CHATS</i>
+        </h2>{" "}
+        {/* ✅ Italic format */}
       </div>
 
       {/* ✅ Chat Messages */}
@@ -141,7 +145,7 @@ const styles = {
   },
   header: {
     padding: "16px",
-    backgroundColor: "#312750", // ✅ Changed header background to extracted color
+    backgroundColor: "#312750", // ✅ Changed to extracted color
     color: "#fff",
     fontSize: "18px",
     fontWeight: "bold",
@@ -149,6 +153,7 @@ const styles = {
   },
   title: {
     margin: 0,
+    fontStyle: "italic", // ✅ Italic format
   },
   messageContainer: {
     flex: 1,
@@ -198,7 +203,7 @@ const styles = {
   },
   sendButton: {
     padding: "10px 20px",
-    backgroundColor: "#312750", // ✅ Changed button color to extracted color
+    backgroundColor: "#312750", // ✅ Changed to extracted color
     color: "#fff",
     border: "none",
     borderRadius: "20px",
