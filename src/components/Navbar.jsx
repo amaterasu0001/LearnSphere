@@ -50,7 +50,6 @@ const Navbar = () => {
     window.location.href = "/login";
   };
 
-
   // ✅ Handle Restricted Page Access
   const handleRestrictedNavigation = (e, route) => {
     const role = localStorage.getItem("role");
@@ -163,6 +162,23 @@ const Navbar = () => {
               >
                 Profile
               </Link>
+            </li>
+            <li className="nav-item mx-2">
+              {isLoggedIn && (
+                <Link
+                  className="nav-link"
+                  to={`/chat/${localStorage.getItem("studentId") || "general"}`} // ✅ Dynamic Handling
+                  onClick={(e) =>
+                    handleRestrictedNavigation(
+                      e,
+                      `/chat/${localStorage.getItem("studentId") || "general"}`
+                    )
+                  }
+                  style={{ color: "white" }}
+                >
+                  Chat
+                </Link>
+              )}
             </li>
 
             {/* ✅ Login / Logout Buttons */}

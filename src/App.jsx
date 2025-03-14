@@ -11,6 +11,7 @@ import TutionJob from "./pages/TutionJob";
 import Favourites from "./pages/Favourites";
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import ResetPassword from "./pages/ResetPassword"; // ✅ Import the Reset Password page
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/Profile" element={<Profile />} />
           <Route path="/TutorRequest" element={<TutorRequest />} />
           <Route path="/favourites" element={<Favourites />} />
+          <Route path="/chat/:studentId" element={<Chat />} />
         </Route>
       </Routes>
     </>

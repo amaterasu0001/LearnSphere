@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa"; // Import Love Icon
+import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate()
 
 const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
@@ -7,6 +8,7 @@ const Favourites = () => {
     localStorage.getItem("theme") === "dark" ||
       window.matchMedia("(prefers-color-scheme: dark)").matches
   );
+  const navigate = useNavigate(); // ✅ For navigating to Chat.jsx
 
   // ✅ Handle Dark Mode Instantly (No Button Required)
   useEffect(() => {
@@ -23,7 +25,6 @@ const Favourites = () => {
       document.body.classList.remove("dark-mode");
     }
 
-    // ✅ Listen for System or Global Toggle Changes
     const handleThemeChange = (e) => {
       if (e.matches) {
         setIsDarkMode(true);
@@ -36,23 +37,17 @@ const Favourites = () => {
       }
     };
 
-    // ✅ Manually Watch for LocalStorage Changes (Fix for Same Page)
     const interval = setInterval(() => {
       const currentTheme = localStorage.getItem("theme");
-      if (currentTheme === "dark") {
-        if (!isDarkMode) {
-          setIsDarkMode(true);
-          document.body.classList.add("dark-mode");
-        }
-      } else {
-        if (isDarkMode) {
-          setIsDarkMode(false);
-          document.body.classList.remove("dark-mode");
-        }
+      if (currentTheme === "dark" && !isDarkMode) {
+        setIsDarkMode(true);
+        document.body.classList.add("dark-mode");
+      } else if (currentTheme !== "dark" && isDarkMode) {
+        setIsDarkMode(false);
+        document.body.classList.remove("dark-mode");
       }
-    }, 100); // ✅ Poll every 100ms for immediate effect
+    }, 100);
 
-    // ✅ Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", handleThemeChange);
 
@@ -60,12 +55,12 @@ const Favourites = () => {
       mediaQuery.removeEventListener("change", handleThemeChange);
       clearInterval(interval);
     };
-  }, [isDarkMode]); // ✅ Fix dependency issue
+  }, [isDarkMode]);
 
+  // ✅ Fetch Favourites
   useEffect(() => {
     const fetchFavourites = async () => {
       const userId = localStorage.getItem("userId");
-
       if (!userId) return;
 
       try {
@@ -85,16 +80,20 @@ const Favourites = () => {
     fetchFavourites();
   }, []);
 
+  // ✅ Handle Chat Button Click
+  const handleChat = (studentId) => {
+    navigate(`/chat/${studentId}`); // ✅ Navigate to Chat.jsx with studentId
+  };
+
   return (
     <div className="container mt-4">
       {/* ✅ Title and Love Icon */}
       <div
         className="d-flex align-items-center mb-4"
         style={{
-          color: isDarkMode ? "#ffffff" : "#000000", // ✅ Dynamic text color
+          color: isDarkMode ? "#ffffff" : "#000000",
         }}
       >
-        {/* ✅ Left aligned heart icon */}
         <FaHeart
           size={24}
           color="#ff4d4d"
@@ -157,8 +156,6 @@ const Favourites = () => {
                     {job.tutorGender} tutor preferred
                   </span>
                 </p>
-
-                {/* ✅ Additional Student Details */}
                 <p>
                   <strong>Student Class:</strong> {job.studentClass}
                 </p>
@@ -177,6 +174,24 @@ const Favourites = () => {
                 <p>
                   <strong>Address:</strong> {job.address}
                 </p>
+
+                {/* ✅ Chat Button */}
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={() => handleChat(job._id)} // ✅ Send studentId to Chat.jsx
+                  style={{
+                    backgroundColor: "#4CAF50",
+                    color: "#fff",
+                    border: "none",
+                    padding: "10px 20px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    transition: "background-color 0.3s",
+                  }}
+                >
+                  Chat with {job.studentName}
+                </button>
               </div>
             </div>
           );
