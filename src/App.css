@@ -15,7 +15,11 @@
 }
 
 .hover-card:hover {
-  background-color: rgb(40, 28, 79); /* Change to the purple background color when hovered */
+  background-color: rgb(
+    40,
+    28,
+    79
+  ); /* Change to the purple background color when hovered */
   color: white; /* Optional: Change the text color to white on hover for better visibility */
 }
 
@@ -96,4 +100,31 @@ footer {
   background-color: #e9ecef !important; /* Light Gray */
   color: #6c757d !important; /* Muted Text */
   cursor: not-allowed;
+}
+
+/* Favourite Link Styling */
+.nav-link {
+  color: white;
+  font-size: 1rem;
+  transition: color 0.5s ease;
+}
+
+.nav-link:hover {
+  color: red;
+}
+
+.dark-mode-card,
+.light-mode-card {
+  transition: all 0.3s ease;
+}
+
+.favourites-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.favourites-card:hover {
+  background-color: #e0e0e0;
 }
