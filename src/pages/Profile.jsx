@@ -299,11 +299,11 @@ const UserProfile = () => {
                         value={formData[`${level}Institute`] || ""} // Ensuring default empty string
                         onChange={handleChange}
                         required
-                        style={{
-                          color: localStorage.getItem("theme") === "dark" ? "white" : "black",
-                          backgroundColor: localStorage.getItem("theme") === "dark" ? "#333" : "white",
-                          borderColor: localStorage.getItem("theme") === "dark" ? "#555" : "#ccc",
-                        }}
+                        // style={{
+                        //   color: localStorage.getItem("theme") === "dark" ? "white" : "black",
+                        //   backgroundColor: localStorage.getItem("theme") === "dark" ? "#333" : "white",
+                        //   borderColor: localStorage.getItem("theme") === "dark" ? "#555" : "#ccc",
+                        // }}
                       />
                     </Form.Group>
                   </Col>
