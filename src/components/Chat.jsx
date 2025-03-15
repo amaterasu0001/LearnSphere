@@ -40,11 +40,7 @@ const Chat = () => {
   // ✅ Fetch Chat History
   const fetchMessages = async () => {
     try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/chat/${senderEmail}/${receiverEmail}`
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chat/${senderEmail}/${receiverEmail}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -126,26 +122,19 @@ const Chat = () => {
       {/* ✅ Chat Messages */}
       <div style={styles.messageContainer}>
         {messages.length === 0 ? (
-          <p style={{ color: "#888", textAlign: "center" }}>
-            No messages yet. Start a conversation!
-          </p>
+          <p style={{ color: "#888", textAlign: "center" }}>No messages yet. Start a conversation!</p>
         ) : (
           messages.map((msg, index) => (
             <div
               key={index}
               style={{
                 ...styles.messageBubble,
-                alignSelf:
-                  msg.senderEmail === senderEmail ? "flex-end" : "flex-start",
-                backgroundColor:
-                  msg.senderEmail === senderEmail ? "#4CAF50" : "#f1f1f1",
+                alignSelf: msg.senderEmail === senderEmail ? "flex-end" : "flex-start",
+                backgroundColor: msg.senderEmail === senderEmail ? "#4CAF50" : "#f1f1f1",
                 color: msg.senderEmail === senderEmail ? "#ffffff" : "#333333",
-              }}
-            >
+              }}>
               <p style={styles.messageText}>{msg.message}</p>
-              <span style={styles.timestamp}>
-                {new Date(msg.createdAt).toLocaleTimeString()}
-              </span>
+              <span style={styles.timestamp}>{new Date(msg.createdAt).toLocaleTimeString()}</span>
             </div>
           ))
         )}
@@ -155,10 +144,10 @@ const Chat = () => {
       {/* ✅ Input Field */}
       <div style={styles.inputContainer}>
         <input
-          type="text"
+          type='text'
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder='Type a message...'
           style={styles.input}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
