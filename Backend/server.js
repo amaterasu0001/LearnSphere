@@ -10,66 +10,93 @@ import Chat from "./models/Chat.js";
 import process from "process";
 
 dotenv.config();
-
 const app = express();
 const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.ALLOWED_ORIGIN || "*",
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:5173",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
+// ✅ Improved CORS setup
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:5173",
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Connect Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/chat", chatRoutes);
+app.use("/api/chat", chatRoutes); // ✅ Fixed import
 
 // ✅ MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    tlsAllowInvalidCertificates: true,
   })
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((error) => console.error("❌ MongoDB Connection Error:", error));
 
 // ✅ Socket.IO Handling
+const userSocketMap = new Map();
+
 io.on("connection", (socket) => {
   console.log(`✅ Client connected: ${socket.id}`);
 
+  // ✅ Register user socket
   socket.on("register", (userId) => {
-    socket.join(userId);
+    userSocketMap.set(userId, socket.id);
+    console.log(`✅ User ${userId} registered with socket ID ${socket.id}`);
   });
 
-  socket.on("joinRoom", ({ senderId, receiverId }) => {
-    socket.join(`${senderId}-${receiverId}`);
-  });
+  // ✅ Send message event
+  socket.on("sendMessage", async ({ senderEmail, receiverEmail, message }) => {
+    if (!senderEmail || !receiverEmail || !message) return;
 
-  socket.on("sendMessage", async ({ senderId, receiverId, message }) => {
     try {
       // ✅ Save to MongoDB
-      const chat = new Chat({ senderId, receiverId, message });
-      await chat.save();
+      const newMessage = new Chat({ senderEmail, receiverEmail, message });
+      await newMessage.save();
 
-      // ✅ Emit message to both users
-      io.to(`${senderId}-${receiverId}`).emit("newMessage", chat);
-      io.to(`${receiverId}-${senderId}`).emit("newMessage", chat);
+      console.log(`✅ Message from ${senderEmail} to ${receiverEmail} stored`);
 
-      console.log(`✅ Message stored and sent: ${message}`);
+      // ✅ Emit message after saving
+      const receiverSocketId = userSocketMap.get(receiverEmail);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("newMessage", newMessage);
+      }
+
+      // ✅ Emit to sender as well
+      const senderSocketId = userSocketMap.get(senderEmail);
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("newMessage", newMessage);
+      }
     } catch (error) {
       console.error("❌ Error storing message:", error);
     }
   });
 
+  // ✅ Handle disconnection
   socket.on("disconnect", () => {
     console.log(`❌ Client disconnected: ${socket.id}`);
+    for (let [key, value] of userSocketMap) {
+      if (value === socket.id) {
+        userSocketMap.delete(key);
+      }
+    }
   });
 });
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);

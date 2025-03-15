@@ -11,7 +11,8 @@ import TutionJob from "./pages/TutionJob";
 import Favourites from "./pages/Favourites";
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import ResetPassword from "./pages/ResetPassword"; // ✅ Import the Reset Password page
-import Chat from "./pages/Chat";
+import Chat from "./components/Chat";
+
 
 function App() {
   return (
